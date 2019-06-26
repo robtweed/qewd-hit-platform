@@ -1,0 +1,54 @@
+[
+  {
+    "allergies": [
+      {
+        "causative_agent": {
+          "value": "Erythromycin",
+          "code": "304270095",
+          "terminology": "SNOMED-CT"
+        },
+        "manifestations": [
+          {
+            "value": "Vomiting",
+            "code": "422400008",
+            "terminology": "SNOMED-CT"
+          }
+        ],
+        "comment": "Reported by carer"
+      }
+    ]
+  },
+
+  {
+    "allergies": [
+      {
+        "causative_agent": {
+          "value": "Seafood"
+        },
+        "manifestations": [
+          {
+            "value": "Swollen lips"
+          }
+        ],
+        "comment": "Eating crabmeat and prawns"
+      }
+    ]
+  },
+
+  {
+    "allergies": [
+      {
+        "causative_agent": {
+          "value": "Bee/wasp stings",
+          "code": "1239085",
+          "terminology": "SNOMED-CT"
+        },
+        "manifestations": [
+          {
+            "value": "Anaphylaxis"
+          }
+        ]
+      }
+    ]
+  }
+]

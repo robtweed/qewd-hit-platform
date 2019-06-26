@@ -1,0 +1,27 @@
+[
+  {
+    "uri": "/openehr/heading/:heading/:patientId",
+    "method": "GET",
+    "handler": "getHeadingData"
+  },
+  {
+    "uri": "/openehr/heading/:heading/:patientId",
+    "method": "POST",
+    "handler": "postHeadingData"
+  },
+  {
+    "uri": "/openehr/schema/:heading",
+    "method": "GET",
+    "handler": "getHeadingSchema"
+  },
+  {
+    "uri": "/openehr/composition/:uid",
+    "method": "DELETE",
+    "handler": "deleteComposition"
+  },
+  {
+    "uri": "/openehr/populate/:heading/:patientId",
+    "method": "POST",
+    "handler": "populate"
+  }
+]

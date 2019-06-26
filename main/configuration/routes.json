@@ -1,0 +1,88 @@
+[
+  {
+    "uri": "/mpi/Patient",
+    "method": "POST",
+    "handler": "createPatient",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/mpi/Patient/:id",
+    "method": "GET",
+    "handler": "getPatient",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/mpi/Patient/:id",
+    "method": "PUT",
+    "handler": "editPatient",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/mpi/Patient",
+    "method": "GET",
+    "handler": "search",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/auth/redirect",
+    "method": "GET",
+    "authenticate": false,
+    "on_microservice": "oidc-client"
+  },
+  {
+    "uri": "/auth/token/:client_id",
+    "method": "GET",
+    "authenticate": false,
+    "on_microservice": "oidc-client"
+  },
+  {
+    "uri": "/auth/logout",
+    "method": "GET",
+    "on_microservice": "oidc-client"
+  },
+  {
+    "uri": "/audit/record",
+    "method": "POST",
+    "on_microservice": "audit_service"
+  },
+  {
+    "uri": "/openehr/heading/:heading/:patientId",
+    "method": "GET",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/openehr/heading/:heading/:patientId",
+    "method": "POST",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/openehr/schema/:heading",
+    "method": "GET",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/openehr/composition/:uid",
+    "method": "DELETE",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/openehr/populate/:heading/:patientId",
+    "method": "POST",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/oidc/admin/:type",
+    "method": "GET",
+    "on_microservice": "oidc-client"
+  },
+  {
+    "uri": "/oidc/admin/:type",
+    "method": "POST",
+    "on_microservice": "oidc-client"
+  },
+  {
+    "uri": "/oidc/admin/:type",
+    "method": "DELETE",
+    "on_microservice": "oidc-client"
+  }
+]

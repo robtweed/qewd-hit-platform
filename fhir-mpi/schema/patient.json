@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "id": "http://hl7.org/fhir/json-schema/3.3",
+  "description": "see http://hl7.org/fhir/json.html#schema for information about the FHIR Json Schemas",
+  "definitions": {
+    "id": {
+      "pattern": "[A-Za-z0-9\\-\\.]{1,64}",
+      "type": "string",
+      "description": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+    },
+    "instant": {
+      "pattern": "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+      "type": "string",
+      "description": "An instant in time - known at least to the second"
+    },
+    "date": {
+      "pattern": "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+      "type": "string",
+      "description": "A date or partial date (e.g. just year or year + month). There is no time zone. The format is a union of the schema types gYear, gYearMonth and date.  Dates SHALL be valid dates."
+    },
+    "string": {
+      "pattern": "\\s*(\\S|\\s)*",
+      "type": "string",
+      "description": "A sequence of Unicode characters"
+    },
+    "uri": {
+      "pattern": "\\S*",
+      "type": "string",
+      "description": "String of characters used to identify a name or a resource"
+    },
+    "Meta": {
+      "description": "The metadata about a resource. This is content in the resource that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.",
+      "properties": {
+        "versionId": {
+          "description": "The version specific identifier, as it appears in the version portion of the URL. This value changes when the resource is created, updated, or deleted.",
+          "$ref": "#/definitions/id"
+        },
+        "lastUpdated": {
+          "description": "When the resource last changed - e.g. when the version changed.",
+          "$ref": "#/definitions/instant"
+        }
+      }
+    },
+    "Identifier": {
+      "description": "A technical identifier - identifies some entity uniquely and unambiguously.",
+      "properties": {
+        "system": {
+          "description": "Establishes the namespace for the value - that is, a URL that describes a set values that are unique.",
+          "$ref": "#/definitions/uri"
+        },
+        "value": {
+          "description": "The portion of the identifier typically relevant to the user and which is unique within the context of the system.",
+          "$ref": "#/definitions/string"
+        }
+      }
+    },
+    "HumanName": {
+      "description": "A human\u0027s name with the ability to identify parts and usage.",
+      "properties": {
+        "family": {
+          "description": "The part of a name that links to the genealogy. In some cultures (e.g. Eritrea) the family name of a son is the first name of his father.",
+          "$ref": "#/definitions/string"
+        },
+        "given": {
+          "description": "Given name.",
+          "items": {
+            "$ref": "#/definitions/string"
+          },
+          "type": "array",
+          "minItems": 1
+        },
+        "prefix": {
+          "description": "Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the start of the name.",
+          "$ref": "#/definitions/string"
+        }
+      },
+      "required": [
+        "family"
+      ]
+    },
+    "Address": {
+      "description": "An address expressed using postal conventions (as opposed to GPS or other location definition formats).  This data type may be used to convey addresses for use in delivering mail as well as for visiting locations which might not be valid for mail delivery.  There are a variety of postal address formats defined around the world.",
+      "properties": {
+        "line": {
+          "description": "This component contains the house number, apartment number, street name, street direction,  P.O. Box number, delivery hints, and similar address information.",
+          "items": {
+            "$ref": "#/definitions/string"
+          },
+          "type": "array"
+        },
+        "city": {
+          "description": "The name of the city, town, village or other community or delivery center.",
+          "$ref": "#/definitions/string"
+        },
+        "district": {
+          "description": "The name of the administrative area (county).",
+          "$ref": "#/definitions/string"
+        },
+        "postalCode": {
+          "description": "A postal code designating a region defined by the postal service.",
+          "$ref": "#/definitions/string"
+        },
+        "country": {
+          "description": "Country - a nation as commonly understood or generally accepted.",
+          "$ref": "#/definitions/string"
+        }
+      }
+    },
+    "Patient": {
+      "description": "Demographics and other administrative information about an individual or animal receiving care or other health-related services.",
+      "properties": {
+        "resourceType": {
+          "description": "This is a Patient resource",
+          "const": "Patient"
+        },
+        "id": {
+          "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+          "$ref": "#/definitions/id"
+        },
+        "meta": {
+          "description": "The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.",
+          "$ref": "#/definitions/Meta"
+        },
+        "identifier": {
+          "description": "An identifier for this patient.",
+          "items": {
+            "$ref": "#/definitions/Identifier"
+          },
+          "type": "array"
+        },
+        "name": {
+          "description": "A name associated with the individual.",
+          "items": {
+            "$ref": "#/definitions/HumanName"
+          },
+          "type": "array",
+          "minItems": 1
+        },
+        "telecom": {
+          "description": "A contact detail (e.g. a telephone number or an email address) by which the individual may be contacted.",
+          "type": "string"
+        },
+        "deceasedBoolean": {
+          "description": "Indicates if the individual is deceased or not.",
+          "pattern": "true|false",
+          "type": "boolean"
+        },
+        "gender": {
+          "description": "Administrative Gender - the gender that the patient is considered to have for administration and record keeping purposes.",
+          "enum": [
+            "male",
+            "female",
+            "other",
+            "unknown"
+          ]
+        },
+        "birthDate": {
+          "description": "The date of birth for the individual.",
+          "$ref": "#/definitions/date"
+        },
+        "address": {
+          "description": "An address for the individual.",
+          "items": {
+            "$ref": "#/definitions/Address"
+          },
+          "type": "array"        }
+      },
+      "required": [
+        "gender",
+        "birthDate"
+      ]
+    }
+  }
+}

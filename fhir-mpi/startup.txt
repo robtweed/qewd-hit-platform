@@ -1,0 +1,1 @@
+sudo docker run -it --name mpi_service --rm -p 8080:8080 -v ~/fhir-mpi:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server

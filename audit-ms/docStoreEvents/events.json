@@ -1,0 +1,20 @@
+{
+  "documents": {
+    "Audit": {
+      "pathsToIndex": {
+        "by_id/:id/userId": {
+          "documentName": "AuditIndex",
+          "path": "by_userId/:value/:id"
+        },
+        "by_id/:id/time": {
+          "documentName": "AuditIndex",
+          "path": "by_time/:value/:id"
+        },
+        "by_id/:id/url": {
+          "documentName": "AuditIndex",
+          "path": "by_url/:value/:id"
+        }
+      }
+    }
+  }
+}

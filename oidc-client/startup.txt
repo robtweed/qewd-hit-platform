@@ -1,0 +1,1 @@
+docker run -it --name oidc-client --rm -p 8080:8080 -v ~/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server

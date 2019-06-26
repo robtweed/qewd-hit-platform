@@ -1,0 +1,14 @@
+{
+  "source": "ethercis",
+  "uid": "{{adverse_reaction_list._uid}}",
+  "date": "=> getTime(adverse_reaction_list.context.start_time)",
+  "author": "{{adverse_reaction_list['composer|name']}}",
+  "allergies": [
+    "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk}}",
+    {
+      "cause": "{{['causative_agent|value']}}",
+      "reactions": "{{reaction_details.manifestation[0]}}",
+      "comment": "{{comment}}"
+    }
+  ] 
+}

@@ -1,0 +1,5 @@
+{
+  "uid": "{{adverse_reaction_list._uid}}",
+  "Date": "{{adverse_reaction_list.context.start_time}}",
+  "Causative Agent": "=> either(adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|value'],adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent'])"
+}

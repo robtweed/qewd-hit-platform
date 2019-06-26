@@ -1,0 +1,99 @@
+{
+  "Custom_Claims": {
+    "profile": [
+      "userId",
+      "role"
+    ]
+  },
+  "Clients": [
+    {
+      "client_id": "test_client",
+      "client_secret": "dcae4e98-61e7-43f5-bcac-fe196cc5d627",
+      "post_logout_uri_path": "/demo",
+      "redirect_uri_path": "/auth/token/test_client"
+    },
+    {
+      "client_id": "openehr-maint",
+      "client_secret": "openehr-maint-secret",
+      "post_logout_uri_path": "/openehr-maint",
+      "ui": {
+        "login_form_title": "OpenEHR Maintenance Log In",
+        "home_page_url": "http://piserver-2:8080/openehr-maint/reload.html"
+      },
+      "redirect_uri_path": "/auth/token/openehr-maint"
+    },
+    {
+      "client_id": "admin",
+      "client_secret": "admin-secret",
+      "post_logout_uri_path": "/oidc-provider-admin",
+      "ui": {
+        "login_form_title": "Administrator Log In",
+        "home_page_url": "http://piserver-2:8080/oidc-provider-admin/reload.html"
+      },
+      "redirect_uri_path": "/auth/token/admin"
+    },
+    {
+      "client_id": "qewd-monitor-ms",
+      "client_secret": "qewd-monitor-ms-secret",
+      "post_logout_uri_path": "/qewd-monitor-ms",
+      "ui": {
+        "login_form_title": "QEWD Monitor Admininstrator Log In",
+        "home_page_url": "http://piserver-2:8080/qewd-monitor-ms"
+      },
+      "redirect_uri_path": "/auth/token/qewd-monitor-ms"
+    }
+  ],
+  "Users": {
+    "test_client": [
+      {
+        "email": "rob.tweed@gmail.com",
+        "claims": {
+          "userId": 9999999001,
+          "given_name": "Rob",
+          "family_name": "Tweed",
+          "role": "idcr"
+        }
+      },
+      {
+        "email": "simon.tweed@gmail.com",
+        "claims": {
+          "userId": 1234568,
+          "given_name": "Simon",
+          "family_name": "Tweed",
+          "role": "phr"
+        },
+        "password": "secret"
+      }
+    ],
+    "openehr-maint": [
+      {
+        "email": "rob.tweed@gmail.com",
+        "claims": {
+          "given_name": "Rob",
+          "family_name": "Tweed",
+          "role": "admin"
+        }
+      }
+    ],
+    "admin": [
+      {
+        "email": "rob.tweed@gmail.com",
+        "claims": {
+          "given_name": "Rob",
+          "family_name": "Tweed",
+          "role": "admin"
+        }
+      }
+    ],
+    "qewd-monitor-ms": [
+      {
+        "email": "rob.tweed@gmail.com",
+        "claims": {
+          "given_name": "Rob",
+          "family_name": "Tweed",
+          "role": "admin"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "documents": {
+    "OIDC": {
+      "pathsToIndex": {
+        "Access/by_id/:id/email": {
+          "path": "Access/by_email/:value",
+          "value": "id"
+        },
+        "Clients/by_id/:id/client_id": {
+          "path": "Clients/by_client_id/:value",
+          "value": "id"
+        },
+        "Users/:client_id/by_id/:id/email": {
+          "path": "Users/:client_id/by_email/:value",
+          "value": "id"
+        },
+        "Users/:client_id/by_id/:id/sub": {
+          "path": "Users/:client_id/by_sub/:value",
+          "value": "id"
+        }
+      }
+    }
+  }
+}

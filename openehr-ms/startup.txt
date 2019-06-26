@@ -1,0 +1,1 @@
+docker run -it --name openehr_service --rm -p 8080:8080 -v ~/openehr-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server

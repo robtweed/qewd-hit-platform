@@ -1,0 +1,11 @@
+{
+  "qewd_up": true,
+  "qewd": {
+    "serverName": "OIDC Client QEWD Server"
+  },
+  "ms_name": "oidc-client",
+  "jwt": {
+    "secret": "3413e684-615d-4391-97c4-60aa17a5ed3e"
+  },
+  "imported": true
+}

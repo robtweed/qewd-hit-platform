@@ -1,0 +1,1 @@
+docker run -it --name orchestrator --rm -p 8080:8080 -v ~/main:/opt/qewd/mapped rtweed/qewd-server

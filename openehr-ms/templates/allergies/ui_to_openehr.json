@@ -1,0 +1,35 @@
+{
+  "ctx": {
+    "composer_name": "{{composer}}",
+    "health_care_facility|id": "999999-345",
+    "health_care_facility|name": "Home",
+    "id_namespace": "NHS-UK",
+    "id_scheme": "2.16.840.1.113883.2.1.4.3",
+    "language": "en",
+    "territory": "GB",
+    "time": "{{now}}"
+  },
+  "adverse_reaction_list": {
+    "allergies_and_adverse_reactions": {
+      "adverse_reaction_risk": [
+        "{{allergies}}",
+        {
+          "reaction_details": {
+            "manifestation": [
+               "{{manifestations}}",
+              {
+                "|code": "{<code>})",
+                "|terminology": "{<terminology>}",
+                "|value": "{{value}}"
+              }
+            ],
+            "comment": "{{comment}}"
+          },
+          "causative_agent|code": "{<causative_agent.code>}",
+          "causative_agent|terminology": "{<causative_agent.terminology>}",
+          "causative_agent|value": "{{causative_agent.value}}"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "oidc_provider": {
+    "host": "http://www.mgateway.com:8081",
+    "urls": {
+      "issuer": "/openid",
+      "authorization_endpoint": "/openid/auth",
+      "token_endpoint": "/openid/token",
+      "userinfo_endpoint": "/openid/me",
+      "introspection_endpoint": "/openid/token/introspect",
+      "jwks_endpoint": "/openid/certs",
+      "end_session_endpoint": "/openid/session/end"
+    },
+    "type": "OpenID Connect",
+    "clients": {
+      "test_client": {
+        "client_secret": "dcae4e98-61e7-43f5-bcac-fe196cc5d627",
+        "callback_url": "/auth/token/test_client",
+        "post_logout_redirect_uri": "/demo",
+        "index_url": "/demo/index.html"
+      },
+      "openehr-maint": {
+        "client_secret": "openehr-maint-secret",
+        "callback_url": "/auth/token/openehr-maint",
+        "post_logout_redirect_uri": "/openehr-maint",
+        "index_url": "/openehr-maint/loggedIn.html"
+      },
+      "admin": {
+        "client_secret": "admin-secret",
+        "callback_url": "/auth/token/admin",
+        "post_logout_redirect_uri": "/oidc-provider-admin",
+        "index_url": "/oidc-provider-admin/loggedIn.html"
+      },
+      "qewd-monitor-ms": {
+        "client_secret": "qewd-monitor-ms-secret",
+        "callback_url": "/auth/token/qewd-monitor-ms",
+        "post_logout_redirect_uri": "/qewd-monitor-ms",
+        "index_url": "/qewd-monitor-ms/loggedIn.html"
+      }
+    },
+    "scope": {
+      "login": "openid profile email"
+    },
+    "authorize_additional_query_string_values": {
+      "application": "testapp"
+    },
+    "logout_approach": "client",
+    "defaultHttpOptions": {
+      "rejectUnauthorized": true,
+      "timeout": 5000
+    }
+  },
+  "orchestrator": {
+    "host": "http://www.mgateway.com:8080",
+    "urls": {
+      "callback_url": "/auth/token",
+      "index_url": "/oidc-provider-admin/loggedIn.html"
+    },
+    "set_cookie": {
+      "name": "JSESSIONID",
+      "path": "/"
+    }
+  },
+  "extract_idToken_fields": "/opt/qewd/mapped/configuration/extract_idToken_fields.js"
+}

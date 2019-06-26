@@ -1,0 +1,15 @@
+{
+  "host": "http://ethercis1.3-test.ripple.foundation:8080",
+  "username": "guest",
+  "password": "guest",
+  "platform": "ethercis",
+  "sessions": {
+    "timeout": 1200000,
+    "max_number": 75
+  },
+  "headings": {
+    "allergies": {
+      "templateId": "IDCR - Adverse Reaction List.v1"
+    }
+  }
+}

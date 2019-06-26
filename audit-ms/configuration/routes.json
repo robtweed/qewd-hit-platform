@@ -1,0 +1,8 @@
+[
+  {
+    "uri": "/audit/record",
+    "method": "POST",
+    "handler": "saveToAudit",
+    "authenticate": false
+  }
+]

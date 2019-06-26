@@ -1,0 +1,55 @@
+{
+  "oidc_provider": {
+    "issuer": {
+      "host": "http://www.mgateway.com",
+      "port": 8081
+    },
+    "path_prefix": "/openid",
+    "configuration_options": {
+      "cookies": {
+        "long": {
+          "httpOnly": true,
+          "maxAge": 1200000
+        }
+      },
+      "ttl": {
+        "IdToken": 1200
+      },
+      "extraParams": ["ui_app"]
+    },
+    "ui": {
+      "login_form_title": "OpenId-Connect Authentication Service Log In",
+      "home_page_url": "http://www.mgateway.com:8080/demo"
+    },
+    "ui_app": {
+      "qewd-monitor-ms": {
+        "home_page_url": "http://www.mgateway.com:8080/qewd-monitor-ms/reload.html"
+      }
+    }
+  },
+  "orchestrator": {
+    "host": "http://www.mgateway.com",
+    "port": 8080
+  },
+  "documentName": "OIDC",
+  "use2FA": false,
+  "useEmail": false,
+  "twilio": {
+    "accountSid": "xxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "authToken": "yyyyyyyyyyyyyyyyyyyyyyyyyy",
+    "telNo": "+447449000000"
+  },
+  "email_server": {
+    "host": "smtp.eu.mailgun.org",
+    "port": 465,
+    "secure": true,
+    "auth": {
+      "user": "postmaster@mail.example.com",
+      "pass": "xxxxxxxxxxxxxxx"
+    }
+  },
+  "user_verify_email": {
+    "from": "Information Only\" <no_reply@example.com>",
+    "subject": "Please verify your email address"
+  }
+}

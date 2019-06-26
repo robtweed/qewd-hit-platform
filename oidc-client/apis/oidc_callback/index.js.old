@@ -1,0 +1,137 @@
+/*
+
+ ----------------------------------------------------------------------------
+ | oidc-client: OIDC Client QEWD-Up MicroService                            |
+ |                                                                          |
+ | Copyright (c) 2019 M/Gateway Developments Ltd,                           |
+ | Redhill, Surrey UK.                                                      |
+ | All rights reserved.                                                     |
+ |                                                                          |
+ | http://www.mgateway.com                                                  |
+ | Email: rtweed@mgateway.com                                               |
+ |                                                                          |
+ |                                                                          |
+ | Licensed under the Apache License, Version 2.0 (the "License");          |
+ | you may not use this file except in compliance with the License.         |
+ | You may obtain a copy of the License at                                  |
+ |                                                                          |
+ |     http://www.apache.org/licenses/LICENSE-2.0                           |
+ |                                                                          |
+ | Unless required by applicable law or agreed to in writing, software      |
+ | distributed under the License is distributed on an "AS IS" BASIS,        |
+ | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |
+ | See the License for the specific language governing permissions and      |
+ |  limitations under the License.                                          |
+ ----------------------------------------------------------------------------
+
+  14 April 2019
+
+*/
+
+// Handler for OIDC Callback URL: /auth/token
+
+var jwt = require('jwt-simple');
+
+var errorCallback;
+
+process.on('unhandledRejection', function(reason, p){
+  console.log("Possibly Unhandled Rejection at: Promise ", p, " reason: ", reason);
+  // application specific logging here
+  errorCallback({error: reason});
+});
+
+module.exports = function(args, finished) {
+
+  if (args.req.query.error) {
+    var error = args.req.query.error;
+    if (args.req.query.error_description) {
+      error = error + ': ' + args.req.query.error_description;
+    }
+    return finished({error: error});
+  }
+
+  var client_id = args.client_id;
+  var orchestrator = this.oidc_client.orchestrator;
+
+  var indexUrl = orchestrator.urls.index_url || '/index.html';
+  var setCookie = orchestrator.set_cookie;
+  var cookiePath;
+  var cookieName;
+  if (setCookie) {
+    if (setCookie.path) {
+      cookiePath = setCookie.path;
+    }
+    if (setCookie.name) {
+      cookieName = setCookie.name;
+    }
+  }
+  if (!cookiePath) {
+    var pieces = indexUrl.split('/');
+    pieces.pop();
+    cookiePath = pieces.join('/');
+    if (cookiePath === '') cookiePath = '/';
+  }
+  if (!cookieName) {
+    cookieName = 'JSESSIONID';
+  }
+
+  var callbackURL = orchestrator.urls.callback_url || '/api/auth/token';
+  callbackURL = orchestrator.host + callbackURL;
+  callbackURL = callbackURL + '/' + client_id;
+
+  console.log('callbackURL = ' + callbackURL);
+  console.log('this.oidc_client.clients = ' + JSON.stringify(this.oidc_client.clients, null, 2));
+
+  var authorizationCallback;
+  console.log(1111);
+  var client;
+  if (this.oidc_client.client) {
+    console.log(2222);
+    client = this.oidc_client.client;
+  }
+  if (this.oidc_client.clients && this.oidc_client.clients[client_id]) {
+    console.log(3333);
+    client = this.oidc_client.clients[client_id].client;
+  }
+
+  console.log(client.authorizationCallback);
+
+  client.authorizationCallback(callbackURL, args.req.query)
+    .then(function (tokenSet) {
+
+      //console.log('\nTokenSet: ' + JSON.stringify(tokenSet));
+
+      var session = args.session;
+      session.authenticated = true;
+      var verify_jwt = jwt.decode(tokenSet.id_token, null, true);
+      if (verify_jwt.nhsNumber) {
+        session.nhsNumber = verify_jwt.nhsNumber;
+      }
+      session.email = verify_jwt.email;
+
+      //console.log('verify_jwt: ' + JSON.stringify(verify_jwt, null, 2));
+
+      if (tokenSet.refresh_expires_in) {
+        session.timeout = tokenSet.refresh_expires_in;
+      }
+      else {
+        session.timeout = verify_jwt.exp - verify_jwt.iat;
+      }
+
+      session.uid = tokenSet.session_state;
+      session.openid = verify_jwt;
+      session.openid.id_token = tokenSet.id_token;
+
+      //console.log('verify_jwt = ' + JSON.stringify(verify_jwt, null, 2));
+
+      // possibly use verify_jwt.sub as a key for a global or session record
+      //  could use session and give it the same timeout as jwt
+
+      finished({
+        ok: true,
+        oidc_redirect: indexUrl,
+        cookiePath: cookiePath,
+        cookieName: cookieName
+      });
+  });
+};

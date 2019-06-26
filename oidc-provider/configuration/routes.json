@@ -1,0 +1,32 @@
+[
+  {
+    "uri": "/oidc/admin/:type",
+    "method": "GET",
+    "handler": "getTypeAll"
+  },
+  {
+    "uri": "/oidc/admin/:type",
+    "method": "POST",
+    "handler": "postTypeAll"
+  },
+  {
+    "uri": "/oidc/admin/:type",
+    "method": "DELETE",
+    "handler": "deleteTypeAll"
+  },
+  {
+    "uri": "/oidc/user/:client_id",
+    "method": "GET",
+    "handler": "getUser"
+  },
+  {
+    "uri": "/oidc/user/:client_id",
+    "method": "POST",
+    "handler": "addUser"
+  },
+  {
+    "uri": "/oidc/user/:client_id",
+    "method": "PUT",
+    "handler": "editUser"
+  }
+]

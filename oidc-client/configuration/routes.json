@@ -1,0 +1,34 @@
+[
+  {
+    "uri": "/auth/redirect",
+    "method": "GET",
+    "handler": "getRedirect",
+    "authenticate": false
+  },
+  {
+    "uri": "/auth/token/:client_id",
+    "method": "GET",
+    "handler": "oidc_callback",
+    "authenticate": false
+  },
+  {
+    "uri": "/auth/logout",
+    "method": "GET",
+    "handler": "logout"
+  },
+  {
+    "uri": "/oidc/admin/:type",
+    "method": "GET",
+    "handler": "oidc_admin"
+  },
+  {
+    "uri": "/oidc/admin/:type",
+    "method": "POST",
+    "handler": "oidc_admin"
+  },
+  {
+    "uri": "/oidc/admin/:type",
+    "method": "DELETE",
+    "handler": "oidc_admin"
+  }
+]

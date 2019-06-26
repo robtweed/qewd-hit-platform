@@ -1,0 +1,60 @@
+{
+  "resourceType": "AllergyIntolerance",
+  "identifier": [
+    {
+      "system": "http://ethercis.org/compositionId",
+      "value": "{{adverse_reaction_list._uid}}"
+    }
+  ],
+  "onset": "=> getDate(start_time)",
+  "recordedDate": "=> getDate(start_time)",
+  "recorder": {
+    "reference": "Practitioner/id",
+    "display": "{{adverse_reaction_list['composer|name']}}"
+  },
+  "patient": {
+    "reference": "Patient/{{patientId}}",
+    "display": "{{patientName}}"
+  },
+  "substance": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|code']}}",
+        "display": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|value']}}"
+      }
+    ]
+  },
+  "status": "active",
+  "type": "allergy",
+  "category": "other",
+  "reaction": [
+    {
+      "substance": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|code']}}",
+            "display": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|value']}}"
+          }
+        ],
+        "text": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|value']}}"
+      },
+      "certainty": "confirmed",
+      "manifestation": [
+        {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.manifestation[0]['|code']}}",
+              "display": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.manifestation[0]['|value']}}"
+            }
+          ],
+          "text": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.manifestation[0]['|value']}}"
+        }
+      ],
+      "description": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.manifestation[0]['|value']}}"
+    }
+  ],
+  "note": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.comment}}"
+}

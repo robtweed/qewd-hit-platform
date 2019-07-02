@@ -1,6 +1,6 @@
 {
   "oidc_provider": {
-    "host": "http://www.mgateway.com:8081",
+    "host": "http://192.168.1.100:8081",
     "urls": {
       "issuer": "/openid",
       "authorization_endpoint": "/openid/auth",
@@ -50,7 +50,7 @@
     }
   },
   "orchestrator": {
-    "host": "http://www.mgateway.com:8080",
+    "host": "http://192.168.1.100:8080",
     "urls": {
       "callback_url": "/auth/token",
       "index_url": "/oidc-provider-admin/loggedIn.html"

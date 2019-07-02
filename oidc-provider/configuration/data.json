@@ -46,28 +46,18 @@
   "Users": {
     "test_client": [
       {
-        "email": "rob.tweed@gmail.com",
+        "email": "rob.tweed@example.com",
         "claims": {
           "userId": 9999999001,
           "given_name": "Rob",
           "family_name": "Tweed",
           "role": "idcr"
         }
-      },
-      {
-        "email": "simon.tweed@gmail.com",
-        "claims": {
-          "userId": 1234568,
-          "given_name": "Simon",
-          "family_name": "Tweed",
-          "role": "phr"
-        },
-        "password": "secret"
       }
     ],
     "openehr-maint": [
       {
-        "email": "rob.tweed@gmail.com",
+        "email": "rob.tweed@example.com",
         "claims": {
           "given_name": "Rob",
           "family_name": "Tweed",
@@ -77,7 +67,7 @@
     ],
     "admin": [
       {
-        "email": "rob.tweed@gmail.com",
+        "email": "rob.tweed@example.com",
         "claims": {
           "given_name": "Rob",
           "family_name": "Tweed",
@@ -87,7 +77,7 @@
     ],
     "qewd-monitor-ms": [
       {
-        "email": "rob.tweed@gmail.com",
+        "email": "rob.tweed@example.com",
         "claims": {
           "given_name": "Rob",
           "family_name": "Tweed",

@@ -72,9 +72,12 @@ module.exports = function(req, res, next) {
     // copy to audit_service for logging
 
     var jwt;
+    var ckie;
     if (req.headers.cookie) {
-      jwt = req.headers.cookie.split('JSESSIONID=')[1];
-      jwt = jwt.split(';')[0];
+      ckie = req.headers.cookie.split('JSESSIONID=')[1];
+      if (typeof ckie !== 'undefined') {
+        jwt = ckie.split(';')[0];
+      }
     }
 
     var content = {

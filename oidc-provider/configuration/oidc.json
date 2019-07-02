@@ -1,7 +1,7 @@
 {
   "oidc_provider": {
     "issuer": {
-      "host": "http://www.mgateway.com",
+      "host": "http://192.168.1.100",
       "port": 8081
     },
     "path_prefix": "/openid",
@@ -19,16 +19,16 @@
     },
     "ui": {
       "login_form_title": "OpenId-Connect Authentication Service Log In",
-      "home_page_url": "http://www.mgateway.com:8080/demo"
+      "home_page_url": "http://192.168.1.100:8080/demo"
     },
     "ui_app": {
       "qewd-monitor-ms": {
-        "home_page_url": "http://www.mgateway.com:8080/qewd-monitor-ms/reload.html"
+        "home_page_url": "http://192.168.1.100:8080/qewd-monitor-ms/reload.html"
       }
     }
   },
   "orchestrator": {
-    "host": "http://www.mgateway.com",
+    "host": "http://192.168.1.100",
     "port": 8080
   },
   "documentName": "OIDC",

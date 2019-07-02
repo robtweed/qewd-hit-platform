@@ -1,1 +1,1 @@
-docker run -it --name audit_service --rm -p 8080:8080 -v ~/audit-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+docker run -it --name audit_service --rm --network qewd-hit -p 8085:8080 -v ~/qewd-hit-platform/audit-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server

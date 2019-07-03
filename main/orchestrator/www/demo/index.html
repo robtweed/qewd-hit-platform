@@ -1,8 +1,16 @@
-<html> 
+<!DOCTYPE html>
+
   <head>
-    <title>QEWD-Up Modular MicroService Demo</title> 
+    <title>QEWD-Up HIT Platform Demo</title> 
+    <style>
+      table, th, td {
+        border: 1px solid black;
+        vertical-align: top;
+      }
+    </style>
   </head> 
   <body>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="js/jwt-decode.min.js"></script>
     <script src="js/app.js"></script>
@@ -13,204 +21,207 @@
 
     <div id="whenLoggedIn">
       <h4 id="welcome"></div>
-      <h4>You are now logged in</h4>
-
-      <div id="patientData">
-        <div>Your Patient FHIR Resource:</div>
-        <pre id="patientFHIR">
-        </pre>
-      </div>
-
-      <div id="addDetails">
-        <div id="newPatient">
-          <div>Your demographics details could not be found</div>
-          <div>Add them now:</div>
-        </div>
-        <div id="existingPatient">
-          <div>Your demographics details were successfully retrieved</div>
-          <div>Edit them now:</div>
-        </div>
-
-        <div id="patForm">
-          <table>
-            <tr>
-              <td>First name(s)</td>
-              <td>
-                <input type="text" id="firstNames" />
-              </td>
-            </tr>
-            <tr>
-              <td>Last name</td>
-              <td>
-                <input type="text" id="lastName" />
-              </td>
-            </tr>
-            <tr>
-              <td>Title</td>
-              <td>
-                <select id="prefix">
-                  <option value="Mr">Mr</option>
-                  <option value="Ms">Ms</option>
-                  <option value="Mrs">Mrs</option>
-                  <option value="Dr">Dr</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>Phone No</td>
-              <td>
-                <input type="text" id="telecom" />
-              </td>
-            </tr>
-            <tr>
-              <td>Gender</td>
-              <td>
-                <select id="gender">
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                  <option value="unknown">Unknown</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>Date of Birth</td>
-              <td>
-                <input type="text" id="birthDate" />
-              </td>
-            </tr>
-            <tr>
-              <td>House No/Name & Street</td>
-              <td>
-                <input type="text" id="address_line" />
-              </td>
-            </tr>
-            <tr>
-              <td>City</td>
-              <td>
-                <input type="text" id="city" />
-              </td>
-            </tr>
-            <tr>
-              <td>County</td>
-              <td>
-                <input type="text" id="district" />
-              </td>
-            </tr>
-            <tr>
-              <td>Post Code</td>
-              <td>
-                <input type="text" id="postalCode" />
-              </td>
-            </tr>
-            <tr>
-              <td>Country</td>
-              <td>
-                <input type="text" id="country" />
-              </td>
-            </tr>
-            <tr>
-              <td colspan=2>
-                <button id="saveMpiBtn">Save</button>
-                <button id="cancelEditBtn">Cancel</button>
-              </td>
-            </tr>
-          </table>
-        </div>
-
-      </div>
-
-      <hr>
-
-      <div>
-        <button id="editBtn">Edit Demographics</button>
-      </div>
-      <div>
-        <button id="mpiBtn">Fetch Demographics</button>
-      </div>
-
-      <div>
-        <button id="addAllergyBtn">Add an Allergy</button>
-      </div>
-
-      <div id="allergyForm">
-        <table>
-          <tr>
-            <td>Causative Agent Name</td>
-            <td>
-              <input type="text" id="allergy_causative_agent_name" />
-            </td>
-          </tr>
-            <td>Causative Agent Code</td>
-            <td>
-              <input type="text" id="allergy_causative_agent_code" />
-            </td>
-          </tr>
-            <td>Causative Agent Terminology</td>
-            <td>
-              <input type="text" id="allergy_causative_agent_terminology" />
-            </td>
-          </tr>
-            <td>Manifestation Name</td>
-            <td>
-              <input type="text" id="allergy_manifestation_name" />
-            </td>
-          </tr>
-          </tr>
-            <td>Manifestation Code</td>
-            <td>
-              <input type="text" id="allergy_manifestation_code" />
-            </td>
-          </tr>
-          </tr>
-            <td>Manifestation Terminology</td>
-            <td>
-              <input type="text" id="allergy_manifestation_terminology" />
-            </td>
-          </tr>
-          </tr>
-            <td>Comment</td>
-            <td>
-              <input type="text" id="allergy_comment" />
-            </td>
-          </tr>
-          <tr>
-            <td colspan=2>
-              <button id="saveAllergyBtn">Save</button>
-              <button id="cancelAllergyBtn">Cancel</button>
-            </td>
-          </tr>
-        </table>
-      </div>
-
-      <div>
-        <button id="getAllergiesBtn">Fetch Allergies: OpenEHR Format</button>
-      </div>
-      <div>
-        <button id="getAllergiesFHIRBtn">Fetch Allergies: FHIR Format</button>
-      </div>
-
-      <div id="allergyContent">
-        <div id="allergyHeading">Allergy Data</div>
-        <pre id="allergyData"></pre>
-      </div>
-
-      <div>
-        <button id="getAllergySchemaBtn">Fetch Allergy Schema from OpenEHR</button>
-      </div>
-      <div>
-        <button id="hideAllergySchemaBtn">Hide Allergy Schema</button>
-      </div>
-      <div id="allergySchema">
-        <div id="allergySchemaHeading">OpenEHR Allergy Schema</div>
-        <pre id="allergySchemaData"></pre>
-      </div>
-
-      <div>
-        <button id="logoutBtn">Log Out</button>
-      </div>
-
+      <h4>You are now logged in
+        <span>
+          <button id="logoutBtn">Log Out</button>
+        </span>
+      </h4>
     </div>
 
-  </body> 
+    <table>
+
+      <tr>
+        <td style="width:220px">
+          <center>
+            <div>
+              <button id="editBtn">Edit Demographics</button>
+            </div>
+            <div>
+              <button id="mpiBtn">Fetch Demographics</button>
+            </div>
+            <br />
+            <div>
+              <button id="addAllergyBtn">Add an Allergy</button>
+            </div>
+            <br />
+            <div>
+              <button id="getAllergiesBtn">Fetch Allergies: OpenEHR Format</button>
+            </div>
+            <br />
+            <div>
+              <button id="getAllergiesFHIRBtn">Fetch Allergies: FHIR Format</button>
+            </div>
+            <br />
+            <div>
+              <button id="getAllergySchemaBtn">Fetch Allergy Schema from OpenEHR</button>
+            </div>
+            <br />
+
+          </center>
+        </td>
+        <td style="width:800px">
+
+          <!-- Content Area -->
+
+          <h4 id="contentTitle"></h4>
+          <pre id="content"></pre>
+
+          <!-- Demographics Form -->
+
+          <div id="demographicsForm">
+            <div id="newPatient">
+              <div>Your demographics details could not be found</div>
+              <div>Add them now:</div>
+            </div>
+
+            <div id="patForm">
+              <table>
+                <tr>
+                  <td>First name(s)</td>
+                  <td>
+                    <input type="text" id="firstNames" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Last name</td>
+                  <td>
+                    <input type="text" id="lastName" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Title</td>
+                  <td>
+                    <select id="prefix">
+                      <option value="Mr">Mr</option>
+                      <option value="Ms">Ms</option>
+                      <option value="Mrs">Mrs</option>
+                      <option value="Dr">Dr</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Phone No</td>
+                  <td>
+                    <input type="text" id="telecom" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Gender</td>
+                  <td>
+                    <select id="gender">
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                      <option value="unknown">Unknown</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Date of Birth</td>
+                  <td>
+                    <input type="text" id="birthDate" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>House No/Name & Street</td>
+                  <td>
+                    <input type="text" id="address_line" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>City</td>
+                  <td>
+                    <input type="text" id="city" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>County</td>
+                  <td>
+                    <input type="text" id="district" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Post Code</td>
+                  <td>
+                    <input type="text" id="postalCode" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Country</td>
+                  <td>
+                    <input type="text" id="country" />
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan=2>
+                    <button id="saveMpiBtn">Save</button>
+                    <button id="cancelEditBtn">Cancel</button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+
+          <!-- New Allergy Form -->
+
+          <div id="allergyForm">
+            <table>
+              <tr>
+                <td>Causative Agent Name</td>
+                <td>
+                  <input type="text" id="allergy_causative_agent_name" />
+                </td>
+              </tr>
+              <tr>
+                <td>Causative Agent Code</td>
+                <td>
+                  <input type="text" id="allergy_causative_agent_code" />
+                </td>
+              </tr>
+              <tr>
+                <td>Causative Agent Terminology</td>
+                <td>
+                  <input type="text" id="allergy_causative_agent_terminology" />
+                </td>
+              </tr>
+              <tr>
+                <td>Manifestation Name</td>
+                <td>
+                  <input type="text" id="allergy_manifestation_name" />
+                </td>
+              </tr>
+              <tr>
+                <td>Manifestation Code</td>
+                <td>
+                  <input type="text" id="allergy_manifestation_code" />
+                </td>
+              </tr>
+              <tr>
+                <td>Manifestation Terminology</td>
+                <td>
+                  <input type="text" id="allergy_manifestation_terminology" />
+                </td>
+              </tr>
+              <tr>
+                <td>Comment</td>
+                <td>
+                  <input type="text" id="allergy_comment" />
+                </td>
+              </tr>
+              <tr>
+                <td colspan=2>
+                  <button id="saveAllergyBtn">Save</button>
+                  <button id="cancelAllergyBtn">Cancel</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- End of Allergy Form -->
+
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>

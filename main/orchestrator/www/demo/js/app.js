@@ -29,20 +29,13 @@ $(document).ready(function() {
   var jwt;
   var patient;
 
-  console.log(1111);
   $('#header').hide();
   $('#whenLoggedIn').hide();
   $('#editBtn').hide();
   $('#mpiBtn').show();
-  $('#addDetails').hide();
-  $('#patientData').hide();
+  $('#demographicsForm').hide();
   $('#newPatient').hide();
-  $('#existingPatient').hide();
-  $('#allergyContent').hide();
-  $('#allergySchema').hide();
-  $('#hideAllergySchemaBtn').hide();
   $('#allergyForm').hide();
-  console.log(2222);
 
   // fire off the /auth/redirect request every time
   // index.html is loaded
@@ -73,7 +66,7 @@ $(document).ready(function() {
       // user is authenticated, so begin display
 
       $('#header').show();
-      $('#addDetails').hide();
+      $('#demographicsForm').hide();
       $('#whenLoggedIn').show();
 
       jwt = jwt_decode(data.token);
@@ -107,6 +100,7 @@ $(document).ready(function() {
   });
 
   $('#mpiBtn').on('click', function(e) {
+    $('#contentTitle').text("Fetching demographics from FHIR MPI service. Please wait...");
     $.ajax({
       url: '/mpi/Patient/' + jwt.openid.userId,
       method: 'GET',
@@ -114,12 +108,14 @@ $(document).ready(function() {
     })
     .done(function(data) {
       console.log('mpi response: ' + JSON.stringify(data, null, 2));
-      $('#addDetails').hide();
-      $('#patientData').show();
+      $('#demographicsForm').hide();
+      $('#allergyForm').hide();
       $('#editBtn').show();
       $('#mpiBtn').hide();
       patient = data.patient;
-      $('#patientFHIR').text(JSON.stringify(data.patient, null, 2));  
+      $('#content').show();
+      $('#contentTitle').text("Demographics (FHIR)");
+      $('#content').text(JSON.stringify(data.patient, null, 2));  
     })
     .fail(function(error) {
       //console.log('mpi error: ' + JSON.stringify(error, null, 2));
@@ -132,12 +128,10 @@ $(document).ready(function() {
         //$('#birthDate').val(dob);
         $('#birthDate').val('');
         $('#country').val('United Kingdom');
-        $('#addDetails').show();
-        $('#patientData').hide();
+        $('#demographicsForm').show();
         $('#editBtn').hide();
         $('#mpiBtn').hide();
         $('#newPatient').show();
-        $('#existingPatient').hide();
       }
     });
   });
@@ -188,8 +182,7 @@ $(document).ready(function() {
     .fail(function(error) {
       console.log('mpi error: ' + error.responseJSON.error);
       alert(error.responseJSON.error);
-      $('#addDetails').hide();
-      $('#patientData').show();
+      $('#demographicsForm').hide();
       $('#editBtn').show();
     });
   });
@@ -208,32 +201,42 @@ $(document).ready(function() {
     $('#postalCode').val(patient.address[0].postalCode);
     $('#country').val(patient.address[0].country);
 
-    $('#addDetails').show();
-    $('#patientData').hide();
+    $('#demographicsForm').show();
+    $('#content').hide();
+    $('#allergyForm').hide();
     $('#editBtn').hide();
     $('#mpiBtn').hide();
     $('#newPatient').hide();
-    $('#existingPatient').show();
+    $('#contentTitle').text("Edit Demographics Data");
   });
 
   $('#cancelEditBtn').on('click', function(e) {
-    $('#addDetails').hide();
-    $('#patientData').show();
-    $('#editBtn').show();
+    $('#demographicsForm').hide();
+    $('#allergyForm').hide();
+    $('#mpiBtn').show();
+    $('#editBtn').hide();
+    $('#content').show();    
+    $('#contentTitle').text("");
+    $('#content').text("");
   });
 
 
   $('#getAllergiesBtn').on('click', function(e) {
     console.log('get allergies..');
-    $('#allergyContent').show();
-    $('#allergyData').text('Fetching. Please wait...');  
+    $('#contentTitle').text("Fetching allergies from OpenEHR. Please wait...");
     $.ajax({
       url: '/openehr/heading/allergies/' + jwt.openid.userId,
       method: 'GET',
       headers: getHeaders()
     })
     .done(function(data) {
-      $('#allergyData').text(JSON.stringify(data.data, null, 2));  
+      $('#demographicsForm').hide();
+      $('#allergyForm').hide();
+      $('#editBtn').hide();
+      $('#mpiBtn').show();
+      $('#contentTitle').text("Allergy Data (from OpenEHR in Un-Flat JSON format)");
+      $('#content').show();
+      $('#content').text(JSON.stringify(data.data, null, 2));  
     })
     .fail(function(error) {
       console.log('Error fetching allergies: ' + error);
@@ -241,17 +244,20 @@ $(document).ready(function() {
   });
 
   $('#getAllergySchemaBtn').on('click', function(e) {
-    $('#getAllergySchemaBtn').hide();
-    $('#hideAllergySchemaBtn').show();
-    $('#allergySchema').show();
-    $('#allergySchemaData').text('Fetching. Please wait...');  
+    $('#contentTitle').text("Fetching allergy schema from OpenEHR. Please wait...");
     $.ajax({
       url: '/openehr/schema/allergies/',
       method: 'GET',
       headers: getHeaders()
     })
     .done(function(data) {
-      $('#allergySchemaData').text(JSON.stringify(data.schema, null, 2));  
+      $('#editBtn').hide();
+      $('#mpiBtn').show();
+      $('#demographicsForm').hide();
+      $('#allergyForm').hide();
+      $('#contentTitle').text("Allergy Flat JSON Template (from OpenEHR)");
+      $('#content').show();
+      $('#content').text(JSON.stringify(data.schema, null, 2));  
     })
     .fail(function(error) {
       console.log('Error fetching allergy schema: ' + error);
@@ -259,29 +265,31 @@ $(document).ready(function() {
   });
 
   $('#getAllergiesFHIRBtn').on('click', function(e) {
-    $('#allergyContent').show();
-    $('#allergyData').text('Fetching as FHIR. Please wait...');  
+    $('#contentTitle').text('Fetching from OpenEHR as FHIR. Please wait...');  
     $.ajax({
       url: '/openehr/heading/allergies/' + jwt.openid.userId + '?format=fhir',
       method: 'GET',
       headers: getHeaders()
     })
     .done(function(data) {
-      $('#allergyData').text(JSON.stringify(data.data, null, 2));  
+      $('#editBtn').hide();
+      $('#mpiBtn').show();
+      $('#demographicsForm').hide();
+      $('#allergyForm').hide();
+      $('#contentTitle').text("Allergy Data (from OpenEHR in FHIR format)");
+      $('#content').show();
+      $('#content').text(JSON.stringify(data.data, null, 2));  
     })
     .fail(function(error) {
       console.log('Error fetching allergies: ' + error);
     });
   });
 
-  $('#hideAllergySchemaBtn').on('click', function(e) {
-    $('#getAllergySchemaBtn').show();
-    $('#hideAllergySchemaBtn').hide();
-    $('#allergySchema').hide();
-  });
-
   $('#addAllergyBtn').on('click', function(e) {
     $('#allergyForm').show();
+    $('#demographicsForm').hide();
+    $('#content').hide();
+    $('#contentTitle').text('Add an Allergy');
     if ($('#allergy_causative_agent_code').val() === '') {
       $('#allergy_causative_agent_code').val('91936005');
     }
@@ -293,8 +301,16 @@ $(document).ready(function() {
   });
 
   $('#cancelAllergyBtn').on('click', function(e) {
+    $('#demographicsForm').hide();
     $('#allergyForm').hide();
+    $('#mpiBtn').show();
+    $('#editBtn').hide();
+    $('#content').show();    
+    $('#contentTitle').text("");
+    $('#content').text("");
   });
+
+
   $('#saveAllergyBtn').on('click', function(e) {
     var data = {
       allergies: [
@@ -329,8 +345,8 @@ $(document).ready(function() {
     $.ajax(message)
     .done(function(data) {
       console.log('OpenEHR POST response: ' + JSON.stringify(data, null, 2));
-      $('#allergyForm').hide();
       alert('Allergy saved');
+      $('#getAllergiesBtn').click();
     })
     .fail(function(error) {
       console.log('Allergy POST error: ' + error.responseJSON.error);

@@ -1,5 +1,17 @@
 # Configuring and Running the Orchestrator
 
+- [Background](#background)
+- [Configuring](#configuring)
+- [Starting the Orchestrator](#starting-the-orchestrator)
+- [Persisting Data on the Orchestrator](#persisting-data-on-the-orchestrator)
+
+
+## Background
+
+The Orchestrator provides the externally-facing interface to the QEWD HIT Platform.  It routes
+incoming requests to the appropriate MicroServices.
+
+
 ## Configuring
 
 Before starting the HIT Platform's Orchestrator service, you need to configure it.

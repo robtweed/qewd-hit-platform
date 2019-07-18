@@ -5,6 +5,7 @@
 - [Defining the IP Addresses/Domain Names](#defining-the-ip-addressesdomain-names)
 - [Defining/Adding Custom Data](#definingadding-custom-data)
 - [Starting the OIDC Provider](#starting-the-oidc-provider)
+- [Persisting Data on the OIDC Provider](#persisting-data-on-the-oidc-provider)
 
 
 ## Background

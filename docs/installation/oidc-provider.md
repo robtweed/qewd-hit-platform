@@ -2,8 +2,8 @@
 
 
 - [Background](#background)
-- [Defining the IP Addresses/Domain Names](#defining-the-ip-addresses-domain-names)
-- [Defining/Adding Custom Data](#defining-adding-custom-data)
+- [Defining the IP Addresses/Domain Names](#defining-the-ip-addressesdomain-names)
+- [Defining/Adding Custom Data](#definingadding-custom-data)
 - [Starting the OIDC Provider](#starting-the-oidc-provider)
 
 

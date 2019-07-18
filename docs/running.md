@@ -10,9 +10,9 @@ Twitter: @rtweed
 - [Installing the HIT Platform Modules](#clone-the-github-repository)
 - [Creating a Docker Bridged Network](#creating-a-docker-bridged-network)
 - [Configuring and Running the Orchestrator](./installation/orchestrator.md)
-- [Configuring and Running the OpenID Connect Provider](./installation/oidc-provider)
-- [Configuring and Running the OpenID Connect Client](./installation/oidc-client)
-- [Configuring and Running the FHIR MPI Service](./installation/fhir-mpi)
+- [Configuring and Running the OpenID Connect Provider](./installation/oidc-provider.md)
+- [Configuring and Running the OpenID Connect Client](./installation/oidc-client.md)
+- [Configuring and Running the FHIR MPI Service](./installation/fhir-mpi.md)
 
 # Installation
 

@@ -5,9 +5,12 @@ Rob Tweed <rtweed@mgateway.com>
 
 Twitter: @rtweed
 
-# Background
 
-A set of modular QEWD Containers that interoperate as a demonstrator for Healthcare IT integration
+- [Installing Docker](#install-docker)
+- [Installing the HIT Platform Modules](#clone-the-github-repository)
+- [Creating a Docker Bridged Network](#creating-a-docker-bridged-network)
+- [Configuring and Running the Orchestrator](./installation/orchestrator.md)
+- [Configuring and Running the OpenID Connect Provider](#oidc-provider)
 
 
 # Installation
@@ -26,7 +29,7 @@ To avoid using *sudo* when running *docker* commands:
   NB: You'll be asked to enter your Linux password
 
 
-## Clone the Github repository:
+## Clone the Github Repository
 
         git clone https://github.com/robtweed/qewd-hit-platform
 
@@ -40,19 +43,12 @@ Inside this repository, you'll find the following MicroServices and Sub-systems:
 - Audit service
 
 
-## Orchestrator
-
-Before starting the HIT Platform's Orchestrator service, you need to configure it.
-
-How you configure the HIT Platform's QEWD-Up Orchestrator depends on whether you want to 
-run all the microservices on the same physical host machine, or whether you want to run them
-on their own separate servers.
-
-
-### Running All Microservices on the same Host Machine
+## Creating a Docker Bridged Network
 
 If you are going to run all the MicroServices on the same physical host, then you should create
-and use a Docker Bridged network for them to intercommunicate.  To create one named *qewd-hit*:
+and use a Docker Bridged network which will allow them to intercommunicate very simply.  
+
+To create one named *qewd-hit*:
 
         docker network create qewd-hit
 
@@ -70,21 +66,6 @@ You should see something like this:
         1ae43f266662        none                null                local
         164c6f96ed76        qewd-hit            bridge              local
 
-
-Now you need to create the Orchestrator's *config.json* file.  This is simply a matter of
-renaming a pre-built file that has been created for you in the repository.  Assuming you
-cloned the repository into your home directory, run the following commands:
-
-        cd ~/qewd-hit-platform/main/configuration
-        mv config.json.same_host config.json
-
-
-### Starting the Orchestrator
-
-You can now start the Orchestrator:
-
-
-        docker run -it --name orchestrator --rm --network qewd-hit -p 8080:8080 -v ~/qewd-hit-platform/main:/opt/qewd/mapped rtweed/qewd-server
 
 
 

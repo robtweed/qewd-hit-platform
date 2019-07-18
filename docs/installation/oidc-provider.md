@@ -2,7 +2,7 @@
 
 
 - [Background](#background)
-- [Defining the IP Addresses/Domain Names](#defining-the-ip-addresses-domain-names)
+- [Defining the IP Addresses/Domain Names](#defining-the-ip-addressesdomain-names)
 - [Defining/Adding Custom Data](#defining-adding-custom-data)
 - [Starting the OIDC Provider](#starting-the-oidc-provider)
 

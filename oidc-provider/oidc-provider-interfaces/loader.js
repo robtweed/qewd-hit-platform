@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  29 May 2019
+  18 July 2019
 
 */
 
@@ -51,6 +51,7 @@ module.exports = function(app, bodyParser, params) {
   var qewd_adapter = adapter(this);
   var Account = account(this);
   var _this = this;
+
   var oidc_provider = this.oidc.oidc_provider;
 
   var configuration = {
@@ -148,6 +149,7 @@ module.exports = function(app, bodyParser, params) {
         }
         var loginFormTitle = "OpenId-Connect Authentication Service Log In";
         var homePageUrl = '/';
+        var orch;
         if (oidc_provider.ui) {
           if (oidc_provider.ui.login_form_title) {
             loginFormTitle = oidc_provider.ui.login_form_title;
@@ -162,6 +164,13 @@ module.exports = function(app, bodyParser, params) {
           }
           if (params.ui[client_id].home_page_url) {
             homePageUrl = params.ui[client_id].home_page_url;
+            if (!homePageUrl.startsWith('http://') && !homePageUrl.startsWith('https://')) {
+              orch = this.oidc.orchestrator.host;
+              if (this.oidc.orchestrator.port) {
+                orch = orch + ':' + this.oidc.orchestrator.port;
+              }
+              homePageUrl = orch + homePageUrl;
+            }
           }
         }
         if (details.params && details.params.ui_app) {

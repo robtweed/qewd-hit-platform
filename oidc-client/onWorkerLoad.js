@@ -40,7 +40,14 @@
 var fs = require('fs');
 var jose = require('node-jose');
 const Issuer = require('openid-client').Issuer;
-var oidc_config = require('/opt/qewd/mapped/configuration/oidc.json');
+var rootPath = '/opt/qewd/mapped/';
+if (process.env.qewd_service_name) {
+  rootPath = process.cwd() + '/' + process.env.qewd_service_name + '/';
+}
+if (process.env.mode && process.env.microservice) {
+  rootPath = process.cwd() + '/' + process.env.microservice + '/';
+}
+var oidc_config = require(rootPath + 'configuration/oidc.json');
 
 function configureClients(issuer, keystore) {
   var oidc_provider = oidc_config.oidc_provider;

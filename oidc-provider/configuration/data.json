@@ -18,7 +18,7 @@
       "post_logout_uri_path": "/openehr-maint",
       "ui": {
         "login_form_title": "OpenEHR Maintenance Log In",
-        "home_page_url": "http://piserver-2:8080/openehr-maint/reload.html"
+        "home_page_url": "/openehr-maint/reload.html"
       },
       "redirect_uri_path": "/auth/token/openehr-maint"
     },
@@ -28,7 +28,7 @@
       "post_logout_uri_path": "/oidc-provider-admin",
       "ui": {
         "login_form_title": "Administrator Log In",
-        "home_page_url": "http://piserver-2:8080/oidc-provider-admin/reload.html"
+        "home_page_url": "/oidc-provider-admin/reload.html"
       },
       "redirect_uri_path": "/auth/token/admin"
     },
@@ -38,7 +38,7 @@
       "post_logout_uri_path": "/qewd-monitor-ms",
       "ui": {
         "login_form_title": "QEWD Monitor Admininstrator Log In",
-        "home_page_url": "http://piserver-2:8080/qewd-monitor-ms"
+        "home_page_url": "/qewd-monitor-ms"
       },
       "redirect_uri_path": "/auth/token/qewd-monitor-ms"
     }

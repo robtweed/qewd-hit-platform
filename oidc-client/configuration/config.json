@@ -2,7 +2,7 @@
   "qewd_up": true,
   "qewd": {
     "serverName": "OIDC Client QEWD Service",
-    "poolSize: 3
+    "poolSize": 3
   },
   "ms_name": "oidc-client",
   "imported": true

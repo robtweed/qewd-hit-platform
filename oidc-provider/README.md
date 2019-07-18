@@ -13,8 +13,4 @@ This is a re-usable QEWD-Up MicroService that provides OpenId-Connect Provider f
 
 It uses the Node.js [oidc-provider](https://github.com/panva/node-oidc-provider) Module.
 
-It also provides a user interface for maintaining the configuration settings and user database.  Use the URL path /oidc-admin to access it.
-
-Patient records are stored in their FHIR format.
-
 

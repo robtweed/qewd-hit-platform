@@ -26,5 +26,5 @@ Installing, configuring, running and using the QEWD HIT Platform is described in
 documentation:
 
 - [Installation, Configuration & Starting](https://github.com/robtweed/qewd/blob/master/docs/running.md)
-
+- [Installation, Configuration & Starting](./running.md)
 

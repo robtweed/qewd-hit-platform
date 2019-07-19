@@ -307,11 +307,20 @@ following buttons:
 
 Each of these demonstrates and exercises a different sub-system / MicroService.
 
+Each of these options is described in detail below, though in a different sequence.
+
+
 ## Fetch Demographics
 
 This option will attempt to retrieve the demographics data for the NHS Number assigned
 to the logged in user.  The Orchestrator will ask the *FHIR-MPI* MicroService to fetch
-this data.
+this data using the REST request:
+
+        GET /mpi/Patient
+
+Note: the NHS Number for the patient record to be fetched is obtained from the
+JWT.  This prevents misuse of this REST request to arbitrarily fetch other the details
+of other patients.
 
 If you're using the platform for the first time and didn't modify
 the user database, you'll have logged in as *Rob Tweed* and therefore your NHS Number will
@@ -322,6 +331,13 @@ data for *Rob Tweed*.
 
 Fill out the fields and click the *Save* button at the bottom of the form.  Note the Date of Birth
 should be entered in FHIR date format: YYYY-MM-DD
+
+The Save button sends the form contents as the body payload of the REST request:
+
+        POST /mpi/Patient
+
+The NHS Number for the patient whose data is to be created is obtained from the JWT, preventing
+misuse of this API.
 
 The form will disappear and instead the data you entered will now be displayed in FHIR Patient Resource
 Type format.
@@ -334,8 +350,67 @@ the Demographics data will persist between restarts]
 You'll now see that the menu of buttons in the left-hand table cell has changed and the first
 button is now *Edit Demographics*.  Clicking this will bring back the form, this time
 pre-populated with the demographics data you previously entered.  You can now edit any of the data
-and re-save it.  The FHIR-formatted Patient data that will now appear will be the edited version.
+and re-save it. 
 
+Clicking the *Save* button sends the form contents as the body payload of the REST request:
+
+        PUT /mpi/Patient
+
+The NHS Number for the patient whose data is to be changed is obtained from the JWT, preventing
+misuse of this API.
+
+The FHIR-formatted Patient data that will now appear will be the edited version.
+
+
+# Fetch Allergy Schema from OpenEHR
+
+Clicking this button will send a request via the Orchestrator to the OpenEHR Interface service, which,
+in turn, will start an OpenEHR session (unless a current one already exists), and then ask for an 
+example of an Allergy Template in Flat JSON format.
+
+What this button does is send the following request to the orchestrator:
+
+        GET /openehr/schema/:heading
+
+where *:heading* is the name of the heading - *allergies* in this case.
+
+The Orchestrator forwards this request to the OpenEHR Interface MicroService which, in turn,
+creates a session on the OpenEHR server (unless it already has a current one available) using the
+OpenEHR REST request:
+
+        POST /rest/v1/session
+
+It then requests an example of the Flat JSON for an Allergy Template using the OpenEHR REST API:
+
+        GET /rest/v1/template/:templateId/example?exampleFilter=INPUT&format=FLAT
+
+The output from this OpenEHR API is actually modified to add the *ctx* properties that are
+needed when saving a record using Flat JSON format.  The Flat JSON format is also "unflattened"
+into a proper hierarchical JSON structure.
+
+You'll see this appearing as the response in the right-hand table cell.
+
+The idea is that you can then use this JSON structure as the basis of an OpenEHR Template's 
+*"Rosetta Stone"* JSON record.  
+
+You can use this to create the JSON transformation 
+template files that the OpenEHR Interface MicroService uses to convert between OpenEHR format 
+and other formats such as the UI format used for input from a browser form, display in the
+browser, or other formats such as FHIR.
+
+The *demo* application already provides pre-worked examples for the Allergy template.  See
+the */qewd-hit-platform/openehr-ms/templates/allergies* folder, or in the
+[Github repository](https://github.com/robtweed/qewd-hit-platform/tree/master/openehr-ms/templates/allergies).
+
+Note: the OpenEHR Allergy Template used by the QEWD HIT Platform is 
+*IDCR - Adverse Reaction List.v1*.  This is mapped to the heading name *allergies* in the
+*/configuration/openehr.json* file in the OpenEHR Interface MicroService.  You can see
+this [here in the Github Repository](https://github.com/robtweed/qewd-hit-platform/blob/master/openehr-ms/configuration/openehr.json).
+
+        "headings": {
+          "allergies": {
+            "templateId": "IDCR - Adverse Reaction List.v1"
+          },
 
 
 

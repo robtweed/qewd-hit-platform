@@ -102,7 +102,7 @@ $(document).ready(function() {
   $('#mpiBtn').on('click', function(e) {
     $('#contentTitle').text("Fetching demographics from FHIR MPI service. Please wait...");
     $.ajax({
-      url: '/mpi/Patient/' + jwt.openid.userId,
+      url: '/mpi/Patient',
       method: 'GET',
       headers: getHeaders()
     })
@@ -166,11 +166,11 @@ $(document).ready(function() {
     };
 
     if (patient) {
-      message.url = '/mpi/Patient/' + jwt.openid.userId;
+      message.url = '/mpi/Patient';
       message.method = 'PUT';
     }
     else {
-      message.url = '/mpi/Patient/';
+      message.url = '/mpi/Patient';
       message.method = 'POST';
     }
 

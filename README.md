@@ -39,6 +39,16 @@ but in a way that can be scaled to enterprise production levels.
 See the [presentation slides](http://ec2.mgateway.com/QEWD-HIT-Platform.pdf) for further background
 and rationale behind the QEWD HIT Platform.
 
+In the [QEWD HIT Platform Github Repository](https://github.com/robtweed/qewd-hit-platform), you'll
+see the files for each of these Containers in their own specific folders as follows:
+
+- **main**: the Orchestrator Container
+- **oidc-provider**: the OIDC Provider Container
+- **oidc-client**: the OIDC Client MicroService Container
+- **fhir-mpi**: the FHIR-based MPI MicroService Container
+- **openehr-ms**: the OpenEHR Interface MicroService Container
+- **audit-ms**: the Audit MicroService Container
+
 
 # OpenEHR
 

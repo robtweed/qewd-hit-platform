@@ -120,6 +120,7 @@ $(document).ready(function() {
     .fail(function(error) {
       //console.log('mpi error: ' + JSON.stringify(error, null, 2));
       if (error.responseJSON.error === 'The specified Patient Id does not exist') {
+        $('#contentTitle').text("Your Demographics Data Could Not be Found");
         $('#firstNames').val(jwt.firstName);
         $('#lastName').val(jwt.lastName);
         $('#telecom').val(jwt.openid.mobileNumber);

@@ -307,8 +307,6 @@ following buttons:
 
 Each of these demonstrates and exercises a different sub-system / MicroService.
 
-Each of these options is described in detail below, though in a different sequence.
-
 
 ## Fetch Demographics
 
@@ -362,6 +360,47 @@ misuse of this API.
 The FHIR-formatted Patient data that will now appear will be the edited version.
 
 
+# Add an Allergy
+
+Clicking this button brings up a form that allows you to enter the key details that describe
+an Allergy for the patient.  For expedience, several of the fields are pre-populated, though you
+can change these values as you wish.  As this is not intended to be a production system, there is
+no validation applied to this form, either in the browser-side or server-side (QEWD-side) logic.
+However, it will demonstrate the "round-trip" for you when saving a Clinical Heading to an OpenEHR
+system.
+
+If you enter all the fields and click the Save button, the request containing your form data is
+sent to the Orchestrator which, in turn, forwards it to the OpenEHR Interface MicroService:
+
+        POST /openehr/heading/:heading/:patientId
+
+eg:
+
+        POST /openehr/heading/allergies/9999999001
+
+The back-end will confirm that the *patientId* value in the URI path matches the NHS
+Number of the logged-in user (which is held in the JWT).
+
+The OpenEHR interface starts an OpenEHR session (unless a current one already exists) using the
+OpenEHR REST API:
+
+        POST /rest/v1/session
+
+It then transforms the simple JSON format containing your Allergy form data into the
+unflattened *Flat JSON* format for the Allergy Template.
+
+All JSON transformation carried out by the OpenEHR Interface
+
+
+# Fetch Allergies: OpenEHR Format
+
+Clicking this button will send a request via the Orchestrator to the OpenEHR Interface service, 
+which, in turn, will start an OpenEHR session (unless a current one already exists),
+fetch all the Allergy records for the logged-in user (9999999001 in our example) from the
+OpenEHR system, which are returned to the browser and displayed in unflattened *Flat JSON*
+format.
+
+
 # Fetch Allergy Schema from OpenEHR
 
 Clicking this button will send a request via the Orchestrator to the OpenEHR Interface service, which,
@@ -405,14 +444,14 @@ the */qewd-hit-platform/openehr-ms/templates/allergies* folder, or in the
 Note: the OpenEHR Allergy Template used by the QEWD HIT Platform is 
 *IDCR - Adverse Reaction List.v1*.  This is mapped to the heading name *allergies* in the
 */configuration/openehr.json* file in the OpenEHR Interface MicroService.  You can see
-this [here in the Github Repository](https://github.com/robtweed/qewd-hit-platform/blob/master/openehr-ms/configuration/openehr.json).
+this [here in the Github Repository](https://github.com/robtweed/qewd-hit-platform/blob/master/openehr-ms/configuration/openehr.json):
 
         "headings": {
           "allergies": {
             "templateId": "IDCR - Adverse Reaction List.v1"
           },
 
-
-
-
+You can add further OpenEHR templates and map them to a clinical heading name of your choice
+by adding them to this section of the *openehr.json* file.  Note that each Template must be defined
+and configured in your OpenEHR system.
 

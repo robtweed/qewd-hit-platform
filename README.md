@@ -12,7 +12,7 @@ for Healthcare IT integration, and which provide the basic building blocks for a
 
 The HIT Platform is based around some important standard building blocks:
 
-- OpenID Connect (OIDC) for user authentication (cf NHS Login)
+- OpenID Connect (OIDC) for user authentication (*cf* NHS Login)
 - OpenEHR for clinical information
 - FHIR for demographic and other non-clinical information
 
@@ -32,13 +32,6 @@ information
   - an **OpenEHR Interface** service which greatly simplifies how to maintain and fetch data from OpenEHR
   - an **Audit service** which keeps a log of all incoming requests received by the Orchestrator.
 
-The key idea of the QEWD HIT Platform is to remove much of the normal learning curve 
-associated with OpenEHR, allowing you to build applications around OpenEHR quickly and simply,
-but in a way that can be scaled to enterprise production levels.
-
-See the [presentation slides](http://ec2.mgateway.com/QEWD-HIT-Platform.pdf) for further background
-and rationale behind the QEWD HIT Platform.
-
 In the [QEWD HIT Platform Github Repository](https://github.com/robtweed/qewd-hit-platform), you'll
 see the files for each of these Containers in their own specific folders as follows:
 
@@ -49,13 +42,28 @@ see the files for each of these Containers in their own specific folders as foll
 - **openehr-ms**: the OpenEHR Interface MicroService Container
 - **audit-ms**: the Audit MicroService Container
 
+The key idea of the QEWD HIT Platform is to remove much of the normal learning curve 
+associated with OpenEHR, allowing you to build applications around OpenEHR quickly and simply,
+but in a way that can be scaled to enterprise production levels.
+
+See the [presentation slides](http://ec2.mgateway.com/QEWD-HIT-Platform.pdf) for further background
+and rationale behind the QEWD HIT Platform.
+
 
 # OpenEHR
+
+## The QEWD HIT Platform and OpenEHR
+
+As stated above, the primary aim of the QEWD HIT Platform is to provide a simple, easy-to-understand and
+easy-to-use interface to OpenEHR systems, and therefore reduce the otherwise significant
+learning curve for which OpenEHR systems are renowned.
 
 The QEWD HIT Platform can integrate with any OpenEHR system.
 
 If you already have access to an OpenEHR system, then you can install and configure the QEWD
 HIT Platform to interface with it.
+
+## Running your own OpenEHR System
 
 If you want to set up your own OpenEHR server to use with the QEWD HIT Platform, 
 the simplest approach is to use one of the available Dockerised versions of 
@@ -72,6 +80,28 @@ instructions are provided in each of the Github repositories:
 
 Once these are up and running, you can install and configure the QEWD HIT Platform.
 
+
+## The QEWD HIT Platform Interface to OpenEHR
+
+The QEWD HIT Platform focuses on the creation, reading and updating of instances of 
+a patient's *Clinical Headings* (eg Allergies, Procedures, Medications, etc),
+ represented in an OpenEHR system by *Templates*.
+
+It turns out that these interfacing operations (create, read, update) primarily involve the
+transformation of one JSON format into another (eg FHIR JSON format to/from
+the JSON format used by OpenEHR).
+
+A key feature of the QEWD HIT Platform is that these transformations are performed in a declarative way, 
+rather than programmatically, using a transformation template which is, itself, a JSON document.
+
+A key goal of the QEWD HIT Platform is to create, as a result of this declarative JSON transformation
+approach, a straightforward, scalable solution that does not require specific programming skills, to
+create a set of definitive transformation template documents that can be jointly developed, agreed and shared
+across the NHS (and beyond), therefore avoiding the otherwise all too common reinvention of the same 
+wheels.
+
+This aspect of the QEWD HIT Platform is therefore important to understand, and is
+[documented in detail here](./openehr.md)
 
 
 # QEWD HIT Platform Documentation

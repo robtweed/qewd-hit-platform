@@ -26,68 +26,29 @@
 
   22 July 2019
 
-  POST /openehr/heading/:heading/:patientId
-
 */
 
-function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-var postPatientCompositionByTemplateId = require('../../utils/postPatientCompositionByTemplateId');
-var headingHelpers = require('../../utils/templateHelpers');
-var transform = require('qewd-transform-json').transform;
-var flatten = require('../../utils/flatten');
+var getSession = require('../../interfaces/getSession');
+var getTemplates = require('../../interfaces/getTemplates');
 
 module.exports = function(args, finished) {
 
-  var patientId = args.patientId;
-  if (!isNumeric(patientId)) {
-    return finished({error: 'Invalid patient Id'});
-  }
-
-  // Only IDCR users can access other NHS Numbers. Get the user's role and 
-  // NHS Number from the decoded JWT (args.session)
-
-  if (args.session.openid.role !== 'idcr') {
-    if (args.session.openid.userId !== patientId) {
-      return finished({error: 'You only have access to your own information'});
-    }
-  }
-
-  var heading = args.heading;
-  if (!this.openehr.headings[heading]) {
-    return finished({error: 'Invalid heading or not configured for use'});
-  }
-
-  var format = 'ui';
-  if (args.req.query && args.req.query.format) {
-    format = args.req.query.format;
-  }
-
   var _this = this;
-  var templateId = this.openehr.headings[heading].templateId;
-  var data = args.req.body;
-  if (!data) {
-    return finished({error: 'Missing data'});
-  }
 
-  console.log('patientId: ' + patientId);
-  console.log('heading: ' + heading);
-  console.log('templateId: ' + templateId);
-
-  data.now = new Date().toISOString();
-  data.composer = args.session.firstName + ' ' + args.session.lastName;
-
-  var template = require('../../templates/' + heading + '/' + format + '_to_openehr.json');
-  var json = transform(template, data, headingHelpers);
-  var flatJson = flatten(json);
-
-  postPatientCompositionByTemplateId.call(this, patientId, templateId, flatJson, args, function(response) {
+  getSession.call(this, function(response) {
     if (response.error) {
-      return finished({error: response.error});
+      return finished(response);
     }
-    return finished(response.response);
+    getTemplates.call(_this, response.sessionId, function(response) {
+      if (response.error) {
+        return finished(response);
+      }
+      var templates = [];
+      response.templates.forEach(function(template) {
+        templates.push(template.templateId);
+      });
+      finished({templates: templates});
+    });
   });
 
 };

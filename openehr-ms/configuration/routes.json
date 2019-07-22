@@ -23,5 +23,10 @@
     "uri": "/openehr/populate/:heading/:patientId",
     "method": "POST",
     "handler": "populate"
+  },
+  {
+    "uri": "/openehr/templates",
+    "method": "GET",
+    "handler": "getTemplates"
   }
 ]

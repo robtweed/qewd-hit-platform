@@ -71,6 +71,11 @@
     "on_microservice": "openehr_service"
   },
   {
+    "uri": "/openehr/templates",
+    "method": "GET",
+    "on_microservice": "openehr_service"
+  },
+  {
     "uri": "/oidc/admin/:type",
     "method": "GET",
     "on_microservice": "oidc-client"

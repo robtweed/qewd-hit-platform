@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  4 April 2019
+  22 July 2019
 
   GET /openehr/heading/:heading/:patientId
 
@@ -45,7 +45,16 @@ module.exports = function(args, finished) {
   var patientId = args.patientId;
   if (!isNumeric(patientId)) {
     return finished({error: 'Invalid patient Id'});
-  } 
+  }
+
+  // Only IDCR users can access other NHS Numbers. Get the user's role and 
+  // NHS Number from the decoded JWT (args.session)
+
+  if (args.session.openid.role !== 'idcr') {
+    if (args.session.openid.userId !== patientId) {
+      return finished({error: 'You only have access to your own information'});
+    }
+  }
 
   var heading = args.heading;
   if (!this.openehr.headings[heading]) {

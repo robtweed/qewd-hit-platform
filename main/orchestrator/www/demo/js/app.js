@@ -244,6 +244,27 @@ $(document).ready(function() {
     });
   });
 
+  $('#getTemplatesBtn').on('click', function(e) {
+    $('#contentTitle').text("Fetching Template List from OpenEHR. Please wait...");
+    $.ajax({
+      url: '/openehr/templates',
+      method: 'GET',
+      headers: getHeaders()
+    })
+    .done(function(data) {
+      $('#editBtn').hide();
+      $('#mpiBtn').show();
+      $('#demographicsForm').hide();
+      $('#allergyForm').hide();
+      $('#contentTitle').text("Templates on your OpenEHR System");
+      $('#content').show();
+      $('#content').text(JSON.stringify(data.templates, null, 2));  
+    })
+    .fail(function(error) {
+      console.log('Error fetching templates: ' + error);
+    });
+  });
+
   $('#getAllergySchemaBtn').on('click', function(e) {
     $('#contentTitle').text("Fetching allergy schema from OpenEHR. Please wait...");
     $.ajax({

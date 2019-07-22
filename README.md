@@ -101,7 +101,7 @@ across the NHS (and beyond), therefore avoiding the otherwise all too common rei
 wheels.
 
 This aspect of the QEWD HIT Platform is therefore important to understand, and is
-[documented in detail here](./openehr.md)
+[documented in detail here](./docs/openehr.md)
 
 
 # QEWD HIT Platform Documentation

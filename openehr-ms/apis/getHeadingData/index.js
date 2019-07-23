@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  22 July 2019
+  23 July 2019
 
   GET /openehr/heading/:heading/:patientId
 
@@ -50,7 +50,7 @@ module.exports = function(args, finished) {
   // Only IDCR users can access other NHS Numbers. Get the user's role and 
   // NHS Number from the decoded JWT (args.session)
 
-  if (args.session.openid.role !== 'idcr') {
+  if (args.session.openid.role === 'phr') {
     if (args.session.openid.userId !== patientId) {
       return finished({error: 'You only have access to your own information'});
     }

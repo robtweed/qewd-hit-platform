@@ -104,6 +104,28 @@ This aspect of the QEWD HIT Platform is therefore important to understand, and i
 [documented in detail here](./docs/openehr.md)
 
 
+# Built-in Applications
+
+The QEWD HIT Platform includes 4 browser-based applications: three for maintenance, configuration
+and monitoring of the Platform, and one that demonstrates a simple user interface around the
+core MPI and OpenEHR APIs:
+
+- **demo application**: a simple browser-based application that demonstrates the core 
+HIT Platform's MPI and OpenEHR APIs
+
+- **openehr-maint**: A browser-based (React) application that allows you to populate and maintain clinical
+heading data in your OpenEHR system
+
+- **oidc-provider-admin**: A browser-based (React) application that allows you to maintain the configuration
+and user database of your OIDC Provider
+
+- **qewd-monitor-ms**: A browser-based (React) application that allows you to monitor and control the
+QEWD environment that controls each of your MicroServices.
+
+Note: all four applications use the OIDC Provider for user authentication.
+
+
+
 # QEWD HIT Platform Documentation
 
 Installing, configuring, running and using the QEWD HIT Platform is described in the following
@@ -111,4 +133,5 @@ documentation:
 
 - [Installation, Configuration & Starting](./docs/running.md)
 - [The Demo Application](./docs/demo.md)
+- [The OpenEHR Maintenance Application](./docs/openehr-maint.md)
 

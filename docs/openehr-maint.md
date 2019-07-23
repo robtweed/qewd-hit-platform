@@ -169,7 +169,7 @@ You will find the *allergies* sample data in the
 file.
 
 if you have read the documentation on how the QEWD HIT Platform 
-[transforms JSON documents](./openehr.ms#transforming-json), 
+[transforms JSON documents](./openehr.md#transforming-json), 
 you will know that there will be a JSON Transformation Template document that transforms these
 allergy JSON records into the correct OpenEHR *Flat JSON* format.  The transformation
 document used is the

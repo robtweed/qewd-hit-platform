@@ -3,10 +3,11 @@
 ## Background
 
 The QEWD HIT Application includes a simple *demo* application that is designed to quickly 
-and simply demonstrate the "moving parts" of the Platform.
+and simply demonstrate the "moving parts" of the Platform, and how they can be used to
+create a browser-based application.
 
-It is a browser-based REST-ful application that is deliberately written using very simple/crude
-HTML and JavaScript/jQuery logic.  
+The *demo* application is a browser-based REST-ful application that is deliberately written
+ using very simple/crude HTML and JavaScript/jQuery logic.  
 
 Do NOT assume that applications written using the QEWD HIT
 Platform need to look so basic or crude!  
@@ -19,6 +20,30 @@ necessary logic written using simple JavaScript/jQuery, all in one single file.
 As a result, developers can build their own sophisticated 
 user interface (UI), using the JavaScript framework of their choice, but quickly re-use and adapt 
 the logic from the *demo* application, and so interact with and make use of the QEWD HIT Platform.
+
+## Finding the Source Code for the Demo Application
+
+You'll find the browser-side code and logic for the *demo* application in the
+[*/main/orchestrator/www/demo*](https://github.com/robtweed/qewd-hit-platform/tree/master/main/orchestrator/www/demo) 
+sub-folder of the *main* (the Orchestrator service) MicroService folder:
+
+- **index.html**: The HTML for the application
+- **js/app.js**: The JavaScript/jQuery logic where you'll discover how to invoke and use
+most of the key QEWD HIT Platform's REST APIs
+
+The server-side code for each REST API is in the MicroService assigned to handle the API.  See
+the [*/main/configuration/routes.json*](https://github.com/robtweed/qewd-hit-platform/blob/master/main/configuration/routes.json)
+file on the Orchestrator MicroService, which will tell you which MicroService handles each REST API.
+
+Look in the corresponding */configuration/routes.json* file on each MicroService to discover the API
+handler method for each of its REST APIs, eg for
+[the *openehr-ms*](https://github.com/robtweed/qewd-hit-platform/blob/master/openehr-ms/configuration/routes.json)
+Microservice.
+
+You'll then find the API handler logic in the */apis* sub-folder, eg for
+[the *openehr-ms*](https://github.com/robtweed/qewd-hit-platform/tree/master/openehr-ms/apis)
+Microservice.
+
 
 ## Starting the Demo Application
 
@@ -362,7 +387,11 @@ The FHIR-formatted Patient data that will now appear will be the edited version.
 
 # Add an Allergy
 
-Clicking this button brings up a form that allows you to enter the key details that describe
+At this stage, it's a good idea to make sure you have read [this document](./openehr.md) 
+to understand how the QEWD HIT Platform and therefore the *demo* 
+application interfaces with your OpenEHR system.
+
+Clicking the *Add an Allergy* button brings up a form that allows you to enter the key details that describe
 an Allergy for the patient.  For expedience, several of the fields are pre-populated, though you
 can change these values as you wish.  As this is not intended to be a production system, there is
 no validation applied to this form, either in the browser-side or server-side (QEWD-side) logic.
@@ -386,28 +415,115 @@ OpenEHR REST API:
 
         POST /rest/v1/session
 
-It then transforms the simple JSON format containing your Allergy form data into the
-unflattened *Flat JSON* format for the Allergy Template.
+Next, it checks to see if the specified patient Id (9999999001 in our case) exists on the
+OpenEHR system.  If not, it creates it and obtains the OpenEHR *ehrId* indentifier. However,
+if the patientId had already been created on the OpenEHR system, it asks OpenEHR for its *ehrId*.
 
-All JSON transformation carried out by the OpenEHR Interface
+It then [transforms the simple JSON format](./openehr.md#accessing-openehr-data)
+ containing your Allergy form data into the
+unflattened *Flat JSON* format for the Allergy Template.  The 
+[JSON Transformation Template document](./openehr.md#transforming-json-without-programming)
+ used for this is 
+[*/templates/allergies/ui-to-openehr.json*](https://github.com/robtweed/qewd-hit-platform/blob/master/openehr-ms/templates/allergies/ui_to_openehr.json)
+
+The transformed JSON, created from the form fields, is then flattened into *Flat JSON* format and can
+then be POSTed to OpenEHR using the standard OpenEHR API, against the *ehrId* for the patient:
+
+        POST /rest/v1/composition
+
+You'll now find that your new Allergy record has been added to the OpenEHR system for the logged-in 
+*demo* application user, and in fact the *demo* application will automatically click the *Fetch Allergies:
+OpenEHR Format* button to retrieve all the Allergy records, including the new one.
 
 
 # Fetch Allergies: OpenEHR Format
 
-Clicking this button will send a request via the Orchestrator to the OpenEHR Interface service, 
+As per the previous option, it's a good idea to make sure you have read [this document](./openehr.md) 
+to understand how the QEWD HIT Platform and therefore the *demo* 
+application interfaces with your OpenEHR system.  How the *Fetch Allergies* option actually
+works should then become clearer.
+
+In summary, clicking this button will send a request via the Orchestrator to the OpenEHR Interface service, 
 which, in turn, will start an OpenEHR session (unless a current one already exists),
 fetch all the Allergy records for the logged-in user (9999999001 in our example) from the
 OpenEHR system, which are returned to the browser and displayed in unflattened *Flat JSON*
 format.
 
+The specific detailed steps are as follows:
+
+The browser sends a request to the Orchstrator:
+
+        GET /openehr/heading/:heading/:patientId
+
+eg:
+
+        GET /openehr/heading/allergies/9999999001
+
+This is forwarded to the OpenEHR Interface MicroService, which first checks to see if the data
+for this heading has already been fetched and is cached in the user's QEWD Session.  If so, it
+is returned as the response.
+
+However, if this is the first time the logged-in user has requested the data for this heading, 
+it first starts an OpenEHR session
+ (unless a current one already exists) using the OpenEHR REST API:
+
+        POST /rest/v1/session
+
+Next, it checks to see if the specified patient Id (9999999001 in our case) exists on the
+OpenEHR system.  If not, it creates it and obtains the OpenEHR *ehrId* indentifier. However,
+if the patientId had already been created on the OpenEHR system, it asks OpenEHR for its *ehrId*.
+
+Next, it sends an AQL query to OpenEHR which asks for all the *Composition Ids* for the specified
+*ehrId* and OpenEHR Template Id (the latter obtained via the heading name mappings in 
+the */configuration/openehr.json* file).  For this it uses the OpenEHR REST API:
+
+        POST /rest/v1/query
+
+Next, the OpenEHR Interface MicroService iterates through the list of *Composition Ids* that were
+returned, and, for each one, requests the Composition data in Flat JSON format.  The OpenEHR REST
+API it uses for each one is:
+
+        GET /rest/v1/composition/:compositionId?format=FLAT
+
+Each Flat JSON response is unflattened, cached into the user's QEWD Session, and added to a response
+array which, when all the Compositions are fetched, is returned to the *demo* application in the browser.
+
+Note that by cacheing the data in the user's QEWD Session, the overhead of all those round-trips to
+OpenEHR are avoided on the 2nd and subsequent requests for the Allergy data.  Try clicking the
+*Fetch Allergies* button again and you'll see how much faster it responds this time!
+
+
+# Fetch Allergies: FHIR Format
+
+This option is identical to the previous option, but simply adds one final step before
+returning the response to the browser: each Allergy record is transformed from the OpenEHR
+*Unflattened Flat JSON* format to FHIR format, and added to a JSON FHIR Bundle container.
+
+The 
+[JSON Transformation Template document](./openehr.md#transforming-json-without-programming)
+ used for this is 
+[*/templates/allergies/openehr-to-fhir.json*](https://github.com/robtweed/qewd-hit-platform/blob/master/openehr-ms/templates/allergies/openehr_to_fhir.json)
+
+This option demonstrates how FHIR resources can be created from OpenEHR, simply by creating
+JSON Transformation Template documents.
+
 
 # Fetch Allergy Schema from OpenEHR
 
-Clicking this button will send a request via the Orchestrator to the OpenEHR Interface service, which,
-in turn, will start an OpenEHR session (unless a current one already exists), and then ask for an 
-example of an Allergy Template in Flat JSON format.
+This option can be used to fetch an example of the unflattened *Flat JSON* structure for a particular Template.
+In this case it fetches an example for the Allergy Template.
 
-What this button does is send the following request to the orchestrator:
+You can copy and paste the example and use it as the basis of your JSON Transformation Template
+documents.
+
+## How it works
+
+In summary, clicking this button will send a request via the Orchestrator to the OpenEHR Interface service, which,
+in turn, will start an OpenEHR session (unless a current one already exists), and then ask for an 
+example of an Allergy Template in Flat JSON format.  It is then unflattened before being returned to
+the browser where it is displayed in the right-hand table cell.
+
+In detail, what this button does is send the following request to the orchestrator:
 
         GET /openehr/schema/:heading
 
@@ -425,7 +541,7 @@ It then requests an example of the Flat JSON for an Allergy Template using the O
 
 The output from this OpenEHR API is actually modified to add the *ctx* properties that are
 needed when saving a record using Flat JSON format.  The Flat JSON format is also "unflattened"
-into a proper hierarchical JSON structure.
+into the full hierarchical JSON structure.
 
 You'll see this appearing as the response in the right-hand table cell.
 
@@ -437,21 +553,9 @@ template files that the OpenEHR Interface MicroService uses to convert between O
 and other formats such as the UI format used for input from a browser form, display in the
 browser, or other formats such as FHIR.
 
-The *demo* application already provides pre-worked examples for the Allergy template.  See
-the */qewd-hit-platform/openehr-ms/templates/allergies* folder, or in the
-[Github repository](https://github.com/robtweed/qewd-hit-platform/tree/master/openehr-ms/templates/allergies).
+The *demo* application already provides pre-worked examples for the Allergy template.  See the 
+[*/qewd-hit-platform/openehr-ms/templates/allergies*](https://github.com/robtweed/qewd-hit-platform/tree/master/openehr-ms/templates/allergies)
+ sub-folder in the *openehr-ms* MicroService folder.
 
-Note: the OpenEHR Allergy Template used by the QEWD HIT Platform is 
-*IDCR - Adverse Reaction List.v1*.  This is mapped to the heading name *allergies* in the
-*/configuration/openehr.json* file in the OpenEHR Interface MicroService.  You can see
-this [here in the Github Repository](https://github.com/robtweed/qewd-hit-platform/blob/master/openehr-ms/configuration/openehr.json):
 
-        "headings": {
-          "allergies": {
-            "templateId": "IDCR - Adverse Reaction List.v1"
-          },
-
-You can add further OpenEHR templates and map them to a clinical heading name of your choice
-by adding them to this section of the *openehr.json* file.  Note that each Template must be defined
-and configured in your OpenEHR system.
 

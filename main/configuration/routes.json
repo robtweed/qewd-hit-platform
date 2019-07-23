@@ -2,25 +2,21 @@
   {
     "uri": "/mpi/Patient",
     "method": "POST",
-    "handler": "createPatient",
     "on_microservice": "mpi_service"
   },
   {
     "uri": "/mpi/Patient",
     "method": "GET",
-    "handler": "getPatient",
     "on_microservice": "mpi_service"
   },
   {
     "uri": "/mpi/Patient",
     "method": "PUT",
-    "handler": "editPatient",
     "on_microservice": "mpi_service"
   },
   {
     "uri": "/mpi/Patients",
     "method": "GET",
-    "handler": "search",
     "on_microservice": "mpi_service"
   },
   {

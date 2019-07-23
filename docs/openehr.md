@@ -207,6 +207,41 @@ a JSON-based syntax for defining JSON transformations, and a set of associated m
 these templates to perform the transformation.
 
 
+### Why is the Flat JSON Unflattened before Tranformation?
+
+You may still be wondering why it's necessary for the OpenEHR Interface MicroService to
+unflatten the *Flat JSON* before it applies any transformations.  The reason is that the 
+OpenEHR Templates almost always include arrays within their structure.  The way an array
+element is represented within a *Flat JSON* path is via a colon followed by an integer
+representing the array element index number, eg in the Allergy Template's *Flat JSON*,
+ *adverse_reaction_risk* is an array:
+
+        "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|code"
+
+So a *Flat JSON* path will refer to specific array elements within the path to the leaf node.
+However, for the purposes of a JSON Transformation Template, we need to be able to refer to
+mappings within 
+[array elements generically](https://github.com/robtweed/qewd-transform-json#substituting-arrays).
+
+We can only do that if the data JSON file is unflattened to properly expose all its internal
+arrays.
+
+You can see such an array transformation rule being specified here in the *openehr-to-ui.json*
+Transformation Template Document:
+
+        "allergies": [
+          "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk}}",
+          {
+            "cause": "{{['causative_agent|value']}}",
+            "reactions": "{{reaction_details.manifestation[0]}}",
+            "comment": "{{comment}}"
+          }
+        ]
+
+since the path *adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk* represents
+an array.
+
+
 ### Pre-worked Examples
 
 The QEWD HIT Platform includes pre-worked examples of such JSON Transformation documents for

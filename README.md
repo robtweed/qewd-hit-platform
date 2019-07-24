@@ -134,4 +134,5 @@ documentation:
 - [Installation, Configuration & Starting](./docs/running.md)
 - [The Demo Application](./docs/demo.md)
 - [The OpenEHR Maintenance Application](./docs/openehr-maint.md)
+- [The OIDC Provider Administration Application](./docs/oidc-provider-admin.md)
 

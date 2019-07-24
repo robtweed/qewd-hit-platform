@@ -120,7 +120,7 @@ heading data in your OpenEHR system
 and user database of your OIDC Provider
 
 - **qewd-monitor-ms**: A browser-based (React) application that allows you to monitor and control the
-QEWD environment that controls each of your MicroServices.
+QEWD environment of each of your QEWD HIT Platform MicroServices.
 
 Note: all four applications use the OIDC Provider for user authentication.
 
@@ -135,4 +135,5 @@ documentation:
 - [The Demo Application](./docs/demo.md)
 - [The OpenEHR Maintenance Application](./docs/openehr-maint.md)
 - [The OIDC Provider Administration Application](./docs/oidc-provider-admin.md)
+- [The MicroService-Enabled QEWD Monitoring Application](./docs/qewd-monitor-ms.md)
 

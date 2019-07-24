@@ -45,7 +45,7 @@ Edit the
 
         window.parent.postMessage('loggedIn', 'http://www.mgateway.com:8080');
 
-YOu must change the second argument of the *postMessage* function to match the IP address/domain name
+You must change the second argument of the *postMessage* function to match the IP address/domain name
 of the host machine on which you are running the Orchestrator Container, and the port
 on which your Orchestrator Container is listening.  eg:
 

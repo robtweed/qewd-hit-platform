@@ -5,7 +5,17 @@
     "on_microservice": "mpi_service"
   },
   {
+    "uri": "/mpi/idcr/Patient/:id",
+    "method": "POST",
+    "on_microservice": "mpi_service"
+  },
+  {
     "uri": "/mpi/Patient",
+    "method": "GET",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/mpi/idcr/Patient/:id",
     "method": "GET",
     "on_microservice": "mpi_service"
   },
@@ -15,12 +25,38 @@
     "on_microservice": "mpi_service"
   },
   {
+    "uri": "/mpi/idcr/Patient/:id",
+    "method": "PUT",
+    "on_microservice": "mpi_service"
+  },
+  {
     "uri": "/mpi/Patients",
     "method": "GET",
     "on_microservice": "mpi_service"
   },
   {
+    "uri": "/mpi/Patients",
+    "method": "POST",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/mpi/Patients/advanced",
+    "method": "POST",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/mpi/Patients/clinical",
+    "method": "POST",
+    "on_microservice": "mpi_service"
+  },
+  {
     "uri": "/auth/redirect",
+    "method": "GET",
+    "authenticate": false,
+    "on_microservice": "oidc-client"
+  },
+  {
+    "uri": "/api/initialise",
     "method": "GET",
     "authenticate": false,
     "on_microservice": "oidc-client"

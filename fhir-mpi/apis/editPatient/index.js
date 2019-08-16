@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  18 March 2019
+  6 August 2019
 
 */
 
@@ -39,20 +39,23 @@ module.exports = function(args, finished) {
   // format patient record correctly as FHIR resource structure
   // if necessary
 
+  var role = args.session.openid.role;
   var patientId;
 
-  /*
-  if (args.session.nhsNumber &&  args.session.nhsNumber !== '') {
+  if (role === 'idcr') {
+    patientId = args.id;
+    if (!patientId) {
+      if (!args.session.nhsNumber && args.session.openid.userId) {
+        args.session.nhsNumber = args.session.openid.userId;
+      }
+      patientId = args.session.nhsNumber;
+    }
+  }
+  else {
+    if (!args.session.nhsNumber && args.session.openid.userId) {
+      args.session.nhsNumber = args.session.openid.userId;
+    }
     patientId = args.session.nhsNumber;
-  }
-  else if (args.session.chiNumber &&  args.session.chiNumber !== '') {
-    patientId = args.session.chiNumber;
-  }
-  */
-
-  patientId = args.session.openid.userId;
-  if (!patientId) {
-    return finished({error: 'Patient Id was not defined'});
   }
 
   var patientIndex = this.db.use('PatientIndex', 'by_identifier', patientId);
@@ -96,6 +99,12 @@ module.exports = function(args, finished) {
   }
   if (!fhir.deceasedBoolean) {
     fhir.deceasedBoolean = false;
+  }
+
+  if (fhir.identifier) {
+    fhir.identifier.forEach(function(identifier, index) {
+      fhir.identifier[index].value = fhir.identifier[index].value.toString();
+    });
   }
 
   var _this = this;

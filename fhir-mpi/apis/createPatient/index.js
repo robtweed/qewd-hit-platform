@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  11 June 2019
+  6 August 2019
 
 */
 
@@ -39,12 +39,40 @@ module.exports = function(args, finished) {
   // format patient record correctly as FHIR resource structure
   // if necessary
 
-  if (!args.session.nhsNumber && args.session.openid.userId) {
-    args.session.nhsNumber = args.session.openid.userId;
+  var role = args.session.openid.role;
+  var patientId;
+
+  if (role === 'idcr') {
+    patientId = args.id;
+    if (!patientId) {
+      if (!args.session.nhsNumber && args.session.openid.userId) {
+        args.session.nhsNumber = args.session.openid.userId;
+      }
+      patientId = args.session.nhsNumber;
+    }
+  }
+  else {
+    if (!args.session.nhsNumber && args.session.openid.userId) {
+      args.session.nhsNumber = args.session.openid.userId;
+    }
+    patientId = args.session.nhsNumber;
+    var chiNumber = args.session.chiNumber;
   }
 
-  var nhsNumber = args.session.nhsNumber;
-  var chiNumber = args.session.chiNumber;
+  var patientIndex = this.db.use('PatientIndex', 'by_identifier', patientId);
+  if (patientIndex.exists) {
+    return finished({
+      error: 'The specified Patient Id already exists',
+      status: {
+        code: 404
+      }
+    });
+  }
+
+  var type = 'nhs';
+  if (args.req.query.type === 'chi') {
+    type = 'chi';
+  }
 
   var fhir = args.req.body;
   fhir.resourceType = 'Patient';
@@ -100,16 +128,16 @@ module.exports = function(args, finished) {
     fhir.id = uuid();
     var id = patientDoc.$('next_id').increment();
     fhir.identifier = [];
-    if (nhsNumber && nhsNumber !== '') {
+    if (type === 'nhs') {
       fhir.identifier.push({
         system: 'https://fhir.nhs.uk/Id/nhs-number',
-        value: nhsNumber
+        value: patientId.toString()
       });
     }
-    if (chiNumber && chiNumber !== '') {
+    else {
       fhir.identifier.push({
         system: 'urn:oid:2.16.840.1.113883.2.1.3.2.4.16.53',
-        value: chiNumber
+        value: patientId.toString()
       });
     }
 

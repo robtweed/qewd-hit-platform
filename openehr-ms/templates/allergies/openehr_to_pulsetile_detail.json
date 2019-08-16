@@ -1,0 +1,7 @@
+{
+  "sourceId": "{{adverse_reaction_list._uid}}",
+  "source": "ethercis",
+  "dateCreated": "=> getTime(adverse_reaction_list.context.start_time)",
+  "cause": "=> either(adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|value'],adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent'])",
+  "reaction": "=> either(adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.manifestation[0]['|value'])"
+}

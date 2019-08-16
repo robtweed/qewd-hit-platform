@@ -5,7 +5,17 @@
     "handler": "createPatient"
   },
   {
+    "uri": "/mpi/idcr/Patient/:id",
+    "method": "POST",
+    "handler": "createPatient"
+  },
+  {
     "uri": "/mpi/Patient",
+    "method": "GET",
+    "handler": "getPatient"
+  },
+  {
+    "uri": "/mpi/idcr/Patient/:id",
     "method": "GET",
     "handler": "getPatient"
   },
@@ -15,9 +25,29 @@
     "handler": "editPatient"
   },
   {
+    "uri": "/mpi/idcr/Patient/:id",
+    "method": "PUT",
+    "handler": "editPatient"
+  },
+  {
     "uri": "/mpi/Patients",
     "method": "GET",
     "handler": "search"
+  },
+  {
+    "uri": "/mpi/Patients",
+    "method": "POST",
+    "handler": "search"
+  },
+  {
+    "uri": "/mpi/Patients/advanced",
+    "method": "POST",
+    "handler": "advancedSearch"
+  },
+  {
+    "uri": "/mpi/Patients/clinical",
+    "method": "POST",
+    "handler": "clinicalSearch"
   },
   {
     "uri": "/mpi/ping",

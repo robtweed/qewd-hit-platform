@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  23 July 2019
+  16 August 2019
 
   GET /openehr/heading/:heading/:patientId
 
@@ -63,7 +63,11 @@ module.exports = function(args, finished) {
 
   var patientName = args.session.firstName + ' ' + args.session.lastName;
 
-  var format = args.req.query.format;
+  var format = args.req.query.format || 'openehr';
+  var selectedUid;
+  if (format === 'pulsetile_detail') {
+    selectedUid = args.req.query.uid;
+  }
 
   var _this = this;
   var templateId = this.openehr.headings[heading].templateId;
@@ -85,14 +89,13 @@ module.exports = function(args, finished) {
         });
       }
       var template;
-      if (format === 'ui') {
-        template = require('../../templates/' + heading + '/openehr_to_ui.json');
-      }
-      if (format === 'fhir') {
-        template = require('../../templates/' + heading + '/openehr_to_fhir.json');
-      }
-      if (format === 'summaryHeadings') {
-        template = require('../../templates/' + heading + '/openehr_to_summaryHeadings.json');
+      if (format !== '') {
+        try {
+          template = require('../../templates/' + heading + '/openehr_to_' + format + '.json');
+        }
+        catch(err) {
+          return finished({error: 'No template for ' + heading + ' format: ' + format});
+        }
       }
       if (!template) {
         return finished({
@@ -103,11 +106,13 @@ module.exports = function(args, finished) {
       var record;
       var uid;
       for (uid in results) {
-        record = results[uid];
-        record.uid = uid;
-        record.patientId = patientId;
-        record.patientName = patientName;
-        transformedData[uid] = transform(template, record, headingHelpers);
+        if (format !== 'pulsetile_detail' || uid === selectedUid) {
+          record = results[uid];
+          record.uid = uid;
+          record.patientId = patientId;
+          record.patientName = patientName;
+          transformedData[uid] = transform(template, record, headingHelpers);
+        }
       }
       if (format === 'summaryHeadings') {
         var summary = [];
@@ -117,6 +122,26 @@ module.exports = function(args, finished) {
         return finished({
           data: summary
         });
+      }
+      if (format === 'pulsetile_synopsis') {
+        var results = {
+          heading: heading,
+          synopsis: []
+        };
+        for (uid in transformedData) {
+          results.synopsis.push(transformedData[uid]);
+        }
+        return finished(results);
+      }
+      if (format === 'pulsetile_summary') {
+        var results = [];
+        for (uid in transformedData) {
+          results.push(transformedData[uid]);
+        }
+        return finished({return_as_array: results});
+      }
+      if (format === 'pulsetile_detail') {
+        return finished(transformedData[selectedUid]);
       }
       if (format === 'fhir') {
         var bundle = {

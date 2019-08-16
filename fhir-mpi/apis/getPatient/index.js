@@ -24,26 +24,29 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  11 June 2019
+  6 August 2019
 
 */
 
 module.exports = function(args, finished) {
 
+  var role = args.session.openid.role;
   var patientId;
 
-  if (!args.session.nhsNumber && args.session.openid.userId) {
-    args.session.nhsNumber = args.session.openid.userId;
+  if (role === 'idcr') {
+    patientId = args.id;
+    if (!patientId) {
+      if (!args.session.nhsNumber && args.session.openid.userId) {
+        args.session.nhsNumber = args.session.openid.userId;
+      }
+      patientId = args.session.nhsNumber;
+    }
   }
-
-  if (args.session.nhsNumber &&  args.session.nhsNumber !== '') {
+  else {
+    if (!args.session.nhsNumber && args.session.openid.userId) {
+      args.session.nhsNumber = args.session.openid.userId;
+    }
     patientId = args.session.nhsNumber;
-  }
-  else if (args.session.chiNumber &&  args.session.chiNumber !== '') {
-    patientId = args.session.chiNumber;
-  }
-  if (!patientId) {
-    return finished({error: 'Patient Id was not defined'});
   }
 
   var patientIndex = this.db.use('PatientIndex', 'by_identifier', patientId);
@@ -57,7 +60,6 @@ module.exports = function(args, finished) {
   }
 
   var id = patientIndex.firstChild.name;
-  console.log('** id = ' + id);
   var fhir = this.db.use('Patient', 'by_id', id).getDocument(true);
   finished({patient: fhir});
 

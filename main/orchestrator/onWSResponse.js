@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  18 March 2019
+  8 August 2019
 
 
   This module intercepts the response from the OIDC callback URL: /api/auth/token
@@ -81,6 +81,10 @@ module.exports = function(req, res, next) {
 
     console.log('redirecting browser to ' + messageObj.oidc_redirect);
     res.redirect(messageObj.oidc_redirect);
+  }
+
+  else if (messageObj.return_as_array) {
+    res.send(messageObj.return_as_array);
   }
 
   else {

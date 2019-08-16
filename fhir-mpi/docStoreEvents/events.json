@@ -18,6 +18,21 @@
         "by_id/:id/identifier/:no/value": {
           "documentName": "PatientIndex",
           "path": "by_identifier/:value/:id/:no"
+        },
+        "by_id/:id/address/:no/city": {
+          "documentName": "PatientIndex",
+          "path": "by_city/:value/:id/:no",
+          "apply": "toLowerCase"
+        },
+        "by_id/:id/gender": {
+          "documentName": "PatientIndex",
+          "path": "by_gender/:value/:id",
+          "apply": "toLowerCase"
+        },
+        "by_id/:id/birthDate": {
+          "documentName": "PatientIndex",
+          "path": "by_birthdate/:value/:id",
+          "apply": "toLowerCase"
         }
       }
     }

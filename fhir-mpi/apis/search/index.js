@@ -29,19 +29,31 @@
 */
 
 module.exports = function(args, finished) {
-  if (args.req.query.name === '') {
-    return finished({error: 'Name was not defined'});
-  }
-  var patientIndex = this.db.use('PatientIndex', 'by_surname', args.req.query.name);
-  if (!patientIndex.exists) {
-    return finished({
-      error: 'No patient with the specified name could be found',
-      status: {
-        code: 404
-      }
-    });
+
+  var name = args.req.query.name;
+  var city = args.req.query.city;
+  if (args.req.method == 'POST') {
+    city = args.req.body.city;
+    name = args.req.body.name;
   }
 
+  if (typeof name === 'undefined' && typeof city === 'undefined') {
+    return finished({error: 'Invalid query'});
+  }
+
+  if (typeof name !== 'undefined' && typeof city !== 'undefined') {
+    return finished({error: 'Invalid query'});
+  }
+
+  if (typeof name !== 'undefined' && name === '') {
+    return finished({error: 'Name was not defined'});
+  }
+
+  if (typeof city !== 'undefined' && city === '') {
+    return finished({error: 'City was not defined'});
+  }
+
+  var patientIndex;
   var fhir = {
     resourceType: 'Bundle',
     entry: []
@@ -49,13 +61,41 @@ module.exports = function(args, finished) {
 
   var patientDoc = this.db.use('Patient', 'by_id');
 
-  patientIndex.forEachChild(function(id) {
-    var patient = patientDoc.$(id).getDocument(true);
-    fhir.entry.push({
-      resource: patient
-    });
-  });
+  if (name) {
+    patientIndex = this.db.use('PatientIndex', 'by_surname', name.toLowerCase());
+    if (!patientIndex.exists) {
+      return finished({
+        error: 'No patient with the specified name could be found',
+        status: {
+          code: 404
+        }
+      });
+    }
 
+    patientIndex.forEachChild(function(id) {
+      fhir.entry.push({
+        resource: patientDoc.$(id).getDocument(true)
+      });
+    });
+  }
+  else {
+    patientIndex = this.db.use('PatientIndex', 'by_city', city.toLowerCase());
+    if (!patientIndex.exists) {
+      return finished({
+        error: 'No patient with the specified city could be found',
+        status: {
+          code: 404
+        }
+      });
+    }
+    
+    patientIndex.forEachChild(function(id) {
+      fhir.entry.push({
+        resource: patientDoc.$(id).getDocument(true)
+      });
+    });
+  }
+  
   finished(fhir);
 
 };

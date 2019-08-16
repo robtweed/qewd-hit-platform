@@ -13,6 +13,12 @@
       "redirect_uri_path": "/auth/token/test_client"
     },
     {
+      "client_id": "pulsetile",
+      "client_secret": "dcae4e98-61e7-43f5-bcac-fe196cc5d627",
+      "post_logout_uri_path": "/",
+      "redirect_uri_path": "/auth/token/pulsetile"
+    },
+    {
       "client_id": "openehr-maint",
       "client_secret": "openehr-maint-secret",
       "post_logout_uri_path": "/openehr-maint",
@@ -45,6 +51,17 @@
   ],
   "Users": {
     "test_client": [
+      {
+        "email": "rob.tweed@example.com",
+        "claims": {
+          "userId": 9999999001,
+          "given_name": "Rob",
+          "family_name": "Tweed",
+          "role": "idcr"
+        }
+      }
+    ],
+    "pulsetile": [
       {
         "email": "rob.tweed@example.com",
         "claims": {

@@ -18,6 +18,12 @@
         "post_logout_redirect_uri": "/demo",
         "index_url": "/demo/index.html"
       },
+      "pulsetile": {
+        "client_secret": "dcae4e98-61e7-43f5-bcac-fe196cc5d627",
+        "callback_url": "/auth/token/pulsetile",
+        "post_logout_redirect_uri": "/",
+        "index_url": "http://178.62.26.29/index.html"
+      },
       "openehr-maint": {
         "client_secret": "openehr-maint-secret",
         "callback_url": "/auth/token/openehr-maint",

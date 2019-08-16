@@ -1,5 +1,6 @@
-If running all microservices on the same host:
+This is a separate, self-standing QEWD service, so always start using
 
- docker run -it --name oidc_provider --rm --network qewd-hit -p 8081:8080 -v ~/qewd-hit-platform/oidc-provider:/opt/qewd/mapped rtweed/qewd-server
+ docker run -it --name oidc_provider --rm -p 8081:8080 -v ~/qewd-hit-platform/oidc-provider:/opt/qewd/mapped rtweed/qewd-server
 
 
+change 8081 to whatever port you want the Provider to listen on

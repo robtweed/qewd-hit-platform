@@ -2,7 +2,9 @@
   "Custom_Claims": {
     "profile": [
       "userId",
-      "role"
+      "role",
+      "firstName",
+      "lastName"
     ]
   },
   "Clients": [
@@ -66,9 +68,9 @@
         "email": "rob.tweed@example.com",
         "claims": {
           "userId": 9999999001,
-          "given_name": "Rob",
-          "family_name": "Tweed",
-          "role": "idcr"
+          "firstName": "Rob",
+          "lastName": "Tweed",
+          "role": "IDCR"
         }
       }
     ],

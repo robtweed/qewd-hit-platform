@@ -26,49 +26,39 @@
 
   23 August 2019
 
-  DELETE /openehr/composition/:uid
-
 */
 
-var startSession = require('../../utils/startSession');
-var deleteComposition = require('../../interfaces/deleteComposition');
+var request = require('request');
 
-module.exports = function(args, finished) {
+module.exports = function(compositionId, templateId, flatJson, sessionId, callback) {
 
-  // for safety, only compositions that are cached in the user's session
-  //  can be deleted.  These get there originally via the 
-  //  getCompositionsData handler
+  var options = {
+    url: this.openehr.host + '/rest/v1/composition/' + compositionId,
+    headers: {
+      'Ehr-Session': sessionId
+    },
+    method: 'PUT',
+    qs: {
+      //templateId: templateId,
+      format: 'FLAT'
+    },
+    json: true,
+    body: flatJson
+  };
 
-  var _this = this;
-  var uid = args.uid;
-
-  var mappedUid = args.req.qewdSession.data.$(['openEHR', 'sourceIdMap', uid]);
-  if (mappedUid.exists) {
-    uid = mappedUid.value;
-  }
-
-  var cachedCompositions = args.req.qewdSession.data.$(['openEHR', 'compositions']);
-  var cachedComposition = cachedCompositions.$(['by_uid', uid]);
-  if (!cachedComposition.exists) {
-    return finished({error: 'You do not have access to a Composition with uid ' + uid});
-  }
-
-  startSession.call(this, args, function(response) {
-
-    if (response.error) {
-      return callback(response);
+  console.log('OpenEHR PUT Patient Composition By Template Id: ' + JSON.stringify(options, null, 2));
+  request(options, function(error, response, body) {
+    console.log('OpenEHR PUT Patient Composition By Template Id: ' + JSON.stringify(response, null, 2));
+    if (response.statusCode !== 200) {
+      callback({
+        error: response.headers['x-error-message'],
+        status: {
+          code: response.statusCode
+        }
+      });
     }
-
-    deleteComposition.call(_this, uid, response.sessionId, function(responseObj) {
-      console.log('*** apis/deleteComposition response: ' + JSON.stringify(responseObj, null, 2));
-
-      // remove from cache
-      var ehrId = cachedComposition.$('ehrId').value;
-      cachedCompositions.$(['by_ehrId', ehrId, uid]).delete();
-      cachedComposition.delete();
-
-      finished(responseObj);
-    });
+    else {
+      callback(response.body);
+    }
   });
-
 };

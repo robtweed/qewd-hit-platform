@@ -26,49 +26,68 @@
 
   23 August 2019
 
-  DELETE /openehr/composition/:uid
-
 */
 
-var startSession = require('../../utils/startSession');
-var deleteComposition = require('../../interfaces/deleteComposition');
+var putComposition = require('../interfaces/putComposition');
+var startSession = require('./startSession');
+var headingHelpers = require('./templateHelpers');
+var transform = require('qewd-transform-json').transform;
+var flatten = require('./flatten');
 
-module.exports = function(args, finished) {
-
-  // for safety, only compositions that are cached in the user's session
-  //  can be deleted.  These get there originally via the 
-  //  getCompositionsData handler
-
+module.exports = function(compositionId, args, callback) {
   var _this = this;
-  var uid = args.uid;
-
-  var mappedUid = args.req.qewdSession.data.$(['openEHR', 'sourceIdMap', uid]);
-  if (mappedUid.exists) {
-    uid = mappedUid.value;
-  }
-
-  var cachedCompositions = args.req.qewdSession.data.$(['openEHR', 'compositions']);
-  var cachedComposition = cachedCompositions.$(['by_uid', uid]);
-  if (!cachedComposition.exists) {
-    return finished({error: 'You do not have access to a Composition with uid ' + uid});
-  }
-
   startSession.call(this, args, function(response) {
 
     if (response.error) {
       return callback(response);
     }
 
-    deleteComposition.call(_this, uid, response.sessionId, function(responseObj) {
-      console.log('*** apis/deleteComposition response: ' + JSON.stringify(responseObj, null, 2));
+    var sessionId = response.sessionId;
 
-      // remove from cache
+    var cachedCompositions = args.req.qewdSession.data.$(['openEHR', 'compositions']);
+    var cachedComposition = cachedCompositions.$(['by_uid', compositionId]);
+    var heading = cachedComposition.$('heading').value;
+    var templateId = _this.openehr.headings[heading].templateId;
+
+    var format = 'ui';
+    if (args.req.query && args.req.query.format) {
+      format = args.req.query.format;
+    }
+
+    var template = require('../templates/' + heading + '/' + format + '_to_openehr.json');
+    var json = transform(template, args.req.body, headingHelpers);
+    var flatJson = flatten(json);
+
+    putComposition.call(_this, compositionId, templateId, flatJson, sessionId, function(response) {
+
       var ehrId = cachedComposition.$('ehrId').value;
-      cachedCompositions.$(['by_ehrId', ehrId, uid]).delete();
-      cachedComposition.delete();
 
-      finished(responseObj);
+      if (response.error) {
+        callback({
+          error: response.error,
+          sessionId: sessionId,
+          ehrId: ehrId
+        });
+      }
+      else {
+
+        // delete cache
+
+        cachedCompositions.$(['by_ehrId', ehrId, compositionId]).delete();
+        cachedComposition.delete();
+
+        if (format === 'pulsetile') {
+          var uid = 'ethercis-' + response.compositionUid.split('::')[0];
+          response.compositionUid = uid;
+          args.req.qewdSession.data.$(['openEHR', 'sourceIdMap', uid]).value = response.compositionUid;
+        }
+
+        callback({
+          response: response,
+          sessionId: sessionId,
+          ehrId: ehrId
+        });
+      }
     });
   });
-
 };

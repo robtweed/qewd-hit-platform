@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  23 July 2019
+  23 August 2019
 
   POST /openehr/heading/:heading/:patientId
 
@@ -86,6 +86,12 @@ module.exports = function(args, finished) {
   postPatientCompositionByTemplateId.call(this, patientId, templateId, flatJson, args, function(response) {
     if (response.error) {
       return finished({error: response.error});
+    }
+    if (format === 'pulsetile') {
+      var uid = response.response.compositionUid;
+      var uid = 'ethercis-' + response.response.compositionUid.split('::')[0];
+      args.req.qewdSession.data.$(['openEHR', 'sourceIdMap', uid]).value = response.response.compositionUid;
+      response.response.compositionUid = uid;
     }
     return finished(response.response);
   });

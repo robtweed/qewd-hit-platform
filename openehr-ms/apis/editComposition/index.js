@@ -24,22 +24,16 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  23 August 2019
+  22 August 2019
 
-  DELETE /openehr/composition/:uid
+  PUT /openehr/composition/:uid
 
 */
 
-var startSession = require('../../utils/startSession');
-var deleteComposition = require('../../interfaces/deleteComposition');
+var putComposition = require('../../utils/putComposition');
 
 module.exports = function(args, finished) {
 
-  // for safety, only compositions that are cached in the user's session
-  //  can be deleted.  These get there originally via the 
-  //  getCompositionsData handler
-
-  var _this = this;
   var uid = args.uid;
 
   var mappedUid = args.req.qewdSession.data.$(['openEHR', 'sourceIdMap', uid]);
@@ -53,22 +47,21 @@ module.exports = function(args, finished) {
     return finished({error: 'You do not have access to a Composition with uid ' + uid});
   }
 
-  startSession.call(this, args, function(response) {
+  var _this = this;
 
+  if (!args.req.body) {
+    return finished({error: 'Missing data'});
+  }
+
+  args.req.body.now = new Date().toISOString();
+  args.req.body.composer = args.session.firstName + ' ' + args.session.lastName;
+
+  putComposition.call(this, uid, args, function(response) {
     if (response.error) {
-      return callback(response);
+      return finished({error: response.error});
     }
 
-    deleteComposition.call(_this, uid, response.sessionId, function(responseObj) {
-      console.log('*** apis/deleteComposition response: ' + JSON.stringify(responseObj, null, 2));
-
-      // remove from cache
-      var ehrId = cachedComposition.$('ehrId').value;
-      cachedCompositions.$(['by_ehrId', ehrId, uid]).delete();
-      cachedComposition.delete();
-
-      finished(responseObj);
-    });
+    return finished(response.response);
   });
 
 };

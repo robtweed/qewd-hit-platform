@@ -1,7 +1,13 @@
 {
-  "sourceId": "{{adverse_reaction_list._uid}}",
+  "sourceId": "{{sourceId}}",
   "source": "ethercis",
+  "author": "{{adverse_reaction_list['composer|name']}}",
   "dateCreated": "=> getTime(adverse_reaction_list.context.start_time)",
   "cause": "=> either(adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|value'],adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent'])",
-  "reaction": "=> either(adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.manifestation[0]['|value'])"
+  "causeCode": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|code']}}",
+  "causeTerminology": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0]['causative_agent|terminology']}}",
+  "reaction": "=> either(adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.manifestation[0]['|value'],adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.manifestation[0])",
+  "terminologyCode": "{{adverse_reaction_list.allergies_and_adverse_reactions.adverse_reaction_risk[0].reaction_details.manifestation[0]['|code']}}",
+  "originalComposition": "",
+  "originalSource": ""
 }

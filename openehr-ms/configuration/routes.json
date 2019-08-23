@@ -16,6 +16,11 @@
   },
   {
     "uri": "/openehr/composition/:uid",
+    "method": "PUT",
+    "handler": "editComposition"
+  },
+  {
+    "uri": "/openehr/composition/:uid",
     "method": "DELETE",
     "handler": "deleteComposition"
   },

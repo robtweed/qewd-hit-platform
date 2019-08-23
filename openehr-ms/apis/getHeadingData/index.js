@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 August 2019
+  23 August 2019
 
   GET /openehr/heading/:heading/:patientId
 
@@ -34,7 +34,7 @@ function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-var getPatientCompositionsByTemplateId = require('../../utils/getPatientCompositionsByTemplateId');
+var getPatientCompositionsByHeading = require('../../utils/getPatientCompositionsByHeading');
 var getCompositionsData = require('../../utils/getCompositionsData');
 
 var headingHelpers = require('../../utils/templateHelpers');
@@ -63,18 +63,27 @@ module.exports = function(args, finished) {
 
   var patientName = args.session.firstName + ' ' + args.session.lastName;
 
-  var format = args.req.query.format || 'openehr';
+  var format = args.req.query.format;
   var selectedUid;
+  var sourceIdMap = args.req.qewdSession.data.$(['openEHR', 'sourceIdMap']);
+
   if (format === 'pulsetile_detail') {
     selectedUid = args.req.query.uid;
+    var mappedUid = sourceIdMap.$(selectedUid);
+
+    if (mappedUid.exists) {
+      //selectedUid = selectedUid.split('ethercis-')[1] + '::local.ethercis.com::1';
+      selectedUid = mappedUid.value;
+    }
+    console.log('** pulsetile_detail - selectedUid = ' + selectedUid);
   }
 
   var _this = this;
-  var templateId = this.openehr.headings[heading].templateId;
+  //var templateId = this.openehr.headings[heading].templateId;
   console.log('patientId: ' + patientId);
   console.log('heading: ' + heading);
-  console.log('templateId: ' + templateId);
-  getPatientCompositionsByTemplateId.call(this, patientId, templateId, args, function(response) {
+  //console.log('templateId: ' + templateId);
+  getPatientCompositionsByHeading.call(this, patientId, heading, args, function(response) {
 
     if (response.error) {
       return finished(response);
@@ -105,10 +114,15 @@ module.exports = function(args, finished) {
       var transformedData = {};
       var record;
       var uid;
+
       for (uid in results) {
         if (format !== 'pulsetile_detail' || uid === selectedUid) {
           record = results[uid];
           record.uid = uid;
+          if (format === 'pulsetile_summary' || format === 'pulsetile_detail') {
+            record.sourceId = 'ethercis-' + uid.split('::')[0];
+            sourceIdMap.$(record.sourceId).value = uid;
+          }
           record.patientId = patientId;
           record.patientName = patientName;
           transformedData[uid] = transform(template, record, headingHelpers);
@@ -141,6 +155,8 @@ module.exports = function(args, finished) {
         return finished({return_as_array: results});
       }
       if (format === 'pulsetile_detail') {
+        console.log('&&& pulsetile_detail - selectedUid = ' + selectedUid);
+        console.log('&&& transformedData = ' + JSON.stringify(transformedData, null, 2));
         return finished(transformedData[selectedUid]);
       }
       if (format === 'fhir') {

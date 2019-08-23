@@ -94,6 +94,11 @@
   },
   {
     "uri": "/openehr/composition/:uid",
+    "method": "PUT",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/openehr/composition/:uid",
     "method": "DELETE",
     "on_microservice": "openehr_service"
   },

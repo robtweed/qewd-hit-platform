@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  4 April 2019
+  22 August 2019
 
 */
 
@@ -39,14 +39,16 @@ function getUidArray(cachedPatientCompositions) {
   return arr;
 }
 
-function setUidArray(ehrId, uidArr, cachedCompositions) {
+function setUidArray(ehrId, heading, uidArr, cachedCompositions) {
   uidArr.forEach(function(uid) {
     cachedCompositions.$(['by_ehrId', ehrId, uid]).value = '';
-    cachedCompositions.$(['by_uid', uid, 'ehrId']).value = ehrId;
+    var cachedComposition = cachedCompositions.$(['by_uid', uid]);
+    cachedComposition.$('ehrId').value = ehrId;
+    cachedComposition.$('heading').value = heading;
   });
 }
 
-module.exports = function(nhsNumber, templateId, args, callback) {
+module.exports = function(nhsNumber, heading, args, callback) {
   var _this = this;
   getEhrId.call(this, nhsNumber, args, function(response) {
     if (response.error) {
@@ -67,11 +69,14 @@ module.exports = function(nhsNumber, templateId, args, callback) {
         });
       }
       else {
+
+        var templateId = _this.openehr.headings[heading].templateId;
+
         getPatientCompositionsByTemplateId.call(_this, ehrId, templateId, sessionId, function(response) {
           if (response.error) {
             return callback(response);
           }
-          setUidArray(ehrId, response.uids, cachedCompositions);
+          setUidArray(ehrId, heading, response.uids, cachedCompositions);
           //cachedPatientCompositions.setDocument(response.uids)
           callback({
             uids: response.uids,

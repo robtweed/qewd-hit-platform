@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  23 August 2019
+  27 August 2019
 
   GET /openehr/heading/:heading/:patientId
 
@@ -63,7 +63,7 @@ module.exports = function(args, finished) {
 
   var patientName = args.session.firstName + ' ' + args.session.lastName;
 
-  var format = args.req.query.format;
+  var format = args.req.query.format || 'ui';
   var selectedUid;
   var sourceIdMap = args.req.qewdSession.data.$(['openEHR', 'sourceIdMap']);
 

@@ -8,7 +8,7 @@
     {
       "cause": "{{['causative_agent|value']}}",
       "reactions": "{{reaction_details.manifestation[0]}}",
-      "comment": "{{comment}}"
+      "comment": "{{reaction_details.comment}}"
     }
   ] 
 }

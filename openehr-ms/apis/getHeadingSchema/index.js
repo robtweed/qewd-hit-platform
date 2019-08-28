@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  12 June 2019
+  28 August 2019
 
 */
 
@@ -42,6 +42,9 @@ module.exports = function(args, finished) {
   }
 
   var templateId = this.openehr.headings[heading].templateId;
+
+  var format = args.req.query.format || 'in';
+
   var _this = this;
 
   getSession.call(this, function(response) {
@@ -51,7 +54,10 @@ module.exports = function(args, finished) {
     var type = 'INPUT';
     getTemplateSchema.call(_this, templateId, response.sessionId, type, function(response) {
       var json = unflatten(response.schema);
-      var schema = toFlatJsonSchema(json);
+      var schema = json;
+      if (format === 'in') {
+        schema = toFlatJsonSchema(json);
+      }
       finished({
         templateId: templateId,
         schema: schema

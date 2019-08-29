@@ -24,6 +24,14 @@ function getHeaders() {
   };
 }
 
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function rev(str) {
+  return str.split('').reverse().join('');
+}
+
 $(document).ready(function() {
 
   var jwt;
@@ -36,6 +44,7 @@ $(document).ready(function() {
   $('#demographicsForm').hide();
   $('#newPatient').hide();
   $('#allergyForm').hide();
+  $('#flatJSONForm').hide();
 
   // fire off the /auth/redirect request every time
   // index.html is loaded
@@ -110,6 +119,7 @@ $(document).ready(function() {
       console.log('mpi response: ' + JSON.stringify(data, null, 2));
       $('#demographicsForm').hide();
       $('#allergyForm').hide();
+      $('#flatJSONForm').hide();
       $('#editBtn').show();
       $('#mpiBtn').hide();
       patient = data.patient;
@@ -205,6 +215,7 @@ $(document).ready(function() {
     $('#demographicsForm').show();
     $('#content').hide();
     $('#allergyForm').hide();
+    $('#flatJSONForm').hide();
     $('#editBtn').hide();
     $('#mpiBtn').hide();
     $('#newPatient').hide();
@@ -214,6 +225,7 @@ $(document).ready(function() {
   $('#cancelEditBtn').on('click', function(e) {
     $('#demographicsForm').hide();
     $('#allergyForm').hide();
+    $('#flatJSONForm').hide();
     $('#mpiBtn').show();
     $('#editBtn').hide();
     $('#content').show();    
@@ -233,6 +245,7 @@ $(document).ready(function() {
     .done(function(data) {
       $('#demographicsForm').hide();
       $('#allergyForm').hide();
+      $('#flatJSONForm').hide();
       $('#editBtn').hide();
       $('#mpiBtn').show();
       $('#contentTitle').text("Allergy Data (from OpenEHR in Demo UI format)");
@@ -255,6 +268,7 @@ $(document).ready(function() {
     .done(function(data) {
       $('#demographicsForm').hide();
       $('#allergyForm').hide();
+      $('#flatJSONForm').hide();
       $('#editBtn').hide();
       $('#mpiBtn').show();
       $('#contentTitle').text("Allergy Data (from OpenEHR in Un-Flat JSON format)");
@@ -279,6 +293,7 @@ $(document).ready(function() {
       $('#mpiBtn').show();
       $('#demographicsForm').hide();
       $('#allergyForm').hide();
+      $('#flatJSONForm').hide();
       $('#contentTitle').text("Templates on your OpenEHR System");
       $('#content').show();
       $('#content').text(JSON.stringify(data.templates, null, 2));  
@@ -300,6 +315,7 @@ $(document).ready(function() {
       $('#mpiBtn').show();
       $('#demographicsForm').hide();
       $('#allergyForm').hide();
+      $('#flatJSONForm').hide();
       $('#contentTitle').text("Allergy Input Flat JSON Template (from OpenEHR)");
       $('#content').show();
       $('#content').text(JSON.stringify(data.schema, null, 2));  
@@ -321,6 +337,7 @@ $(document).ready(function() {
       $('#mpiBtn').show();
       $('#demographicsForm').hide();
       $('#allergyForm').hide();
+      $('#flatJSONForm').hide();
       $('#contentTitle').text("Allergy Input Flat JSON Template (from OpenEHR)");
       $('#content').show();
       $('#content').text(JSON.stringify(data.schema, null, 2));  
@@ -342,6 +359,7 @@ $(document).ready(function() {
       $('#mpiBtn').show();
       $('#demographicsForm').hide();
       $('#allergyForm').hide();
+      $('#flatJSONForm').hide();
       $('#contentTitle').text("Allergy Data (from OpenEHR in FHIR format)");
       $('#content').show();
       $('#content').text(JSON.stringify(data.data, null, 2));  
@@ -353,6 +371,7 @@ $(document).ready(function() {
 
   $('#addAllergyBtn').on('click', function(e) {
     $('#allergyForm').show();
+    $('#flatJSONForm').hide();
     $('#demographicsForm').hide();
     $('#content').hide();
     $('#contentTitle').text('Add an Allergy');
@@ -369,6 +388,7 @@ $(document).ready(function() {
   $('#cancelAllergyBtn').on('click', function(e) {
     $('#demographicsForm').hide();
     $('#allergyForm').hide();
+    $('#flatJSONForm').hide();
     $('#mpiBtn').show();
     $('#editBtn').hide();
     $('#content').show();    
@@ -418,8 +438,117 @@ $(document).ready(function() {
       console.log('Allergy POST error: ' + error.responseJSON.error);
       alert(error.responseJSON.error);
       $('#allergyForm').hide();
+      $('#flatJSONForm').hide();
     });
 
   });
 
+  $('#unFlattenBtn').on('click', function(e) {
+    $('#editBtn').hide();
+    $('#mpiBtn').show();
+    $('#demographicsForm').hide();
+    $('#allergyForm').hide();
+    $('#flatJSONForm').show();
+    $('#content').show();    
+    $('#contentTitle').text("");
+    $('#content').text("");
+  });
+
+  $('#unFlattenItBtn').on('click', function(e) {
+    var flatJSON = $('#flatJSON').val();
+    try {
+      flatJSON = JSON.parse(flatJSON);
+      var unflatJSON = unflatten(flatJSON);
+      $('#flatJSONForm').hide();
+      $('#content').show();  
+      $('#contentTitle').text("Unflattened version of your JSON");
+      $('#content').text(JSON.stringify(unflatJSON, null, 2));
+    }
+    catch(err) {
+      alert('Unable to parse that JSON');
+    }
+  });
+
+  $('#getJWTBtn').on('click', function(e) {
+    $('#editBtn').hide();
+    $('#mpiBtn').show();
+    $('#demographicsForm').hide();
+    $('#allergyForm').hide();
+    $('#flatJSONForm').hide();
+    $('#contentTitle').text("Current JWT");
+    $('#content').show();
+    $('#content').html(getCookie('JSESSIONID') + '<br /> <br />'); 
+  });
+
 });
+
+function unflatten(flatJson) {
+  var value;
+  var json = {};
+
+  for (var path in flatJson) {
+    value = flatJson[path];
+
+    // pre-process to sort out | anomalies
+
+    if (path.indexOf('|') !== -1) {
+      var pieces = path.split('|');
+      var prev;
+      var lc;
+      var found = false;
+      var xpcs;
+      var prevRev;
+      for (var i = 1; i < pieces.length; i++) {
+        prev = pieces[i - 1];
+        lc = prev[prev.length - 1];
+        if (isNumeric(lc)) {
+          prevRev = rev(prev);
+          xpcs = prevRev.split(':');
+          if (isNumeric(rev(xpcs[0]))) {
+            pieces[0] = pieces[0] + '/';
+            found = true;
+          }
+        }
+      }
+      if (found) {
+        path = pieces.join('|');
+      }
+    }
+
+    // now begin processing
+
+    pieces = path.split('/');
+    var ref = json;
+    var lastIndex = pieces.length - 1;
+    pieces.forEach(function(piece, ix) {
+      var pieces = piece.split(':');
+      var name = pieces[0];
+      var index = pieces[1];
+      if (typeof index === 'undefined') {
+        if (typeof ref[name] === 'undefined') {
+          if (ix === lastIndex) {
+            ref[name] = value;
+          }
+          else {
+            ref[name] = {};
+          }
+        }
+        ref = ref[name];
+      }
+      else {
+        if (typeof ref[name] === 'undefined') {
+          if (ix === lastIndex) {
+            ref[name] = [value];
+          }
+          else {
+            ref[name] = [{}];
+          }
+        }
+        ref = ref[name][index];
+      }
+    });
+  }
+  return json;
+}
+
+

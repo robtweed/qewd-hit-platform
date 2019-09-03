@@ -53,15 +53,7 @@
             </div>
             <br />
             <div>
-              <button id="getAllergiesUiBtn">Fetch Allergies: Demo UI Format</button>
-            </div>
-            <br />
-            <div>
-              <button id="getAllergiesRawBtn">Fetch Allergies: OpenEHR Format</button>
-            </div>
-            <br />
-            <div>
-              <button id="getAllergiesFHIRBtn">Fetch Allergies: FHIR Format</button>
+              <button id="getHeadingBtn">Fetch A Heading</button>
             </div>
             <br />
             <div>
@@ -196,6 +188,43 @@
             <br /><br />
           </div>
 
+          <!-- Generic GET Heading Form -->
+
+
+          <div id="getHeadingForm">
+            <table>
+              <tr>
+                <td colspan="2">
+                  <h4 id="getHeaadingTitle">Get Heading Records</h4>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Heading Name
+                </td>
+                <td>
+                  <select id="getHeadingName">
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Output Transform Format Name
+                </td>
+                <td>
+                  <select id="getHeadingOutputFormat">
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <button id="getHeadingGoBtn">Fetch</button>
+                  <button id="cancelgetHeadingBtn">Cancel</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+
           <!-- Generic JSON Heading Input Form -->
 
 
@@ -208,7 +237,7 @@
               </tr>
               <tr>
                 <td>
-                  Heading Template Name
+                  Heading Name
                 </td>
                 <td>
                   <select id="headingNameInput">

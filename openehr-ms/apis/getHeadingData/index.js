@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  2 September 2019
+  3 September 2019
 
   GET /openehr/heading/:heading/:patientId
 
@@ -68,6 +68,9 @@ module.exports = function(args, finished) {
   var sourceIdMap = args.req.qewdSession.data.$(['openEHR', 'sourceIdMap']);
 
   if (format === 'pulsetile_detail') {
+    if (!args.req.query.uid) {
+      return finished({error: 'The pulsetile_detail format requires you to specify a Composition Uid'});
+    }
     selectedUid = args.req.query.uid;
     var mappedUid = sourceIdMap.$(selectedUid);
 
@@ -75,13 +78,13 @@ module.exports = function(args, finished) {
       //selectedUid = selectedUid.split('ethercis-')[1] + '::local.ethercis.com::1';
       selectedUid = mappedUid.value;
     }
-    console.log('** pulsetile_detail - selectedUid = ' + selectedUid);
+    //console.log('** pulsetile_detail - selectedUid = ' + selectedUid);
   }
 
   var _this = this;
   //var templateId = this.openehr.headings[heading].templateId;
-  console.log('patientId: ' + patientId);
-  console.log('heading: ' + heading);
+  //console.log('patientId: ' + patientId);
+  //console.log('heading: ' + heading);
   //console.log('templateId: ' + templateId);
   getPatientCompositionsByHeading.call(this, patientId, heading, args, function(response) {
 
@@ -116,7 +119,7 @@ module.exports = function(args, finished) {
       var uid;
 
       for (uid in results) {
-        if (format !== 'pulsetile_detail' || uid === selectedUid) {
+        if (format === 'pulsetile_synopsis' || format === 'pulsetile_summary' || format !== 'pulsetile_detail' || uid === selectedUid) {
           record = results[uid];
           record.uid = uid;
           if (format === 'pulsetile_synopsis' || format === 'pulsetile_summary' || format === 'pulsetile_detail') {
@@ -155,8 +158,8 @@ module.exports = function(args, finished) {
         return finished({return_as_array: results});
       }
       if (format === 'pulsetile_detail') {
-        console.log('&&& pulsetile_detail - selectedUid = ' + selectedUid);
-        console.log('&&& transformedData = ' + JSON.stringify(transformedData, null, 2));
+        //console.log('&&& pulsetile_detail - selectedUid = ' + selectedUid);
+        //console.log('&&& transformedData = ' + JSON.stringify(transformedData, null, 2));
         return finished(transformedData[selectedUid]);
       }
       if (format === 'fhir') {

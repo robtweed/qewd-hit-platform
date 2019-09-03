@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  30 August 2019
+  3 September 2019
 
 */
 
@@ -32,8 +32,7 @@ var fs = require('fs');
 
 module.exports = function(args, finished) {
 
-  var filter = args.req.query.filter;
-  if (filter !== 'input') filter = 'all';
+  var filter = args.req.query.filter || 'all';
 
   var transforms = {};
   var folder = __dirname + '/../../templates';
@@ -44,16 +43,37 @@ module.exports = function(args, finished) {
     var files = fs.readdirSync(dir);
     if (filter === 'all') {
       transforms[heading] = files;
-     }
-     else {
-       files.forEach(function(file) {
-         if (file.indexOf('_to_openehr.json') !== -1) {
-           var name = file.split('_to_openehr.json')[0];
-           transforms[heading].push(name);
-         }
-       });
-       transforms[heading].push('openehr');
-     }
+    }
+    else {
+      if (filter === 'input') {
+        files.forEach(function(file) {
+          if (file.indexOf('_to_openehr.json') !== -1) {
+            var name = file.split('_to_openehr.json')[0];
+            transforms[heading].push(name);
+          }
+        });
+        transforms[heading].push('openehr');
+      }
+      if (filter === 'inputAndOutput') {
+        transforms[heading] = {
+          input: [],
+          output: []
+        };
+        files.forEach(function(file) {
+          if (file.indexOf('_to_openehr.json') !== -1) {
+            var name = file.split('_to_openehr.json')[0];
+            transforms[heading]['input'].push(name);
+          }
+          if (file.startsWith('openehr_to_')) {
+            var name = file.split('openehr_to_')[1];
+            name = name.split('.json')[0];
+            transforms[heading]['output'].push(name);
+          }
+        });
+        transforms[heading]['input'].push('openehr');
+        transforms[heading]['output'].push('openehr');
+      }
+    }
   });
 
   finished({transforms: transforms});

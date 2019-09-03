@@ -49,6 +49,10 @@
             </div>
             <br />
             <div>
+              <button id="addHeadingBtn">Add a Heading Record (generic method)</button>
+            </div>
+            <br />
+            <div>
               <button id="getAllergiesUiBtn">Fetch Allergies: Demo UI Format</button>
             </div>
             <br />
@@ -191,6 +195,52 @@
             <button id="unFlattenItBtn">Unflatten</button>
             <br /><br />
           </div>
+
+          <!-- Generic JSON Heading Input Form -->
+
+
+          <div id="headingJSONForm">
+            <table>
+              <tr>
+                <td colspan="2">
+                  <h4>Post a new Heading Record as JSON (via an Input Transform)</h4>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Heading Template Name
+                </td>
+                <td>
+                  <select id="headingNameInput">
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Input Transform Format Name
+                </td>
+                <td>
+                  <select id="headingInputTransform">
+                  </select>
+                </td>
+              </tr>
+              <tr>           
+                <td>
+                  Input JSON
+                </td>
+                <td>
+                  <textarea id="headingJSONInput" cols="100" rows="30"></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <button id="saveHeadingBtn">Save</button>
+                  <button id="cancelHeadingBtn">Cancel</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+
 
           <!-- New Allergy Form -->
 

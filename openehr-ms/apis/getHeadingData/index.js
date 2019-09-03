@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  27 August 2019
+  2 September 2019
 
   GET /openehr/heading/:heading/:patientId
 
@@ -119,7 +119,7 @@ module.exports = function(args, finished) {
         if (format !== 'pulsetile_detail' || uid === selectedUid) {
           record = results[uid];
           record.uid = uid;
-          if (format === 'pulsetile_summary' || format === 'pulsetile_detail') {
+          if (format === 'pulsetile_synopsis' || format === 'pulsetile_summary' || format === 'pulsetile_detail') {
             record.sourceId = 'ethercis-' + uid.split('::')[0];
             sourceIdMap.$(record.sourceId).value = uid;
           }

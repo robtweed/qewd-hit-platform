@@ -78,6 +78,16 @@
     "on_microservice": "audit_service"
   },
   {
+    "uri": "/openehr/transforms",
+    "method": "GET",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/openehr/headings",
+    "method": "GET",
+    "on_microservice": "openehr_service"
+  },
+  {
     "uri": "/openehr/heading/:heading/:patientId",
     "method": "GET",
     "on_microservice": "openehr_service"

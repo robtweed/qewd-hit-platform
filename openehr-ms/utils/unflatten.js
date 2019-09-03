@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  31 March 2019
+  2 September 2019
 
 */
 
@@ -91,12 +91,16 @@ module.exports = function(flatJson) {
       }
       else {
         if (typeof ref[name] === 'undefined') {
+          ref[name] = [];
           if (ix === lastIndex) {
-            ref[name] = [value];
+            ref[name][index] = value;
           }
           else {
-            ref[name] = [{}];
+            ref[name][index] = {};
           }
+        }
+        if (typeof ref[name][index] === 'undefined') {
+          ref[name][index] = {};
         }
         ref = ref[name][index];
       }

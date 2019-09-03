@@ -1,5 +1,15 @@
 [
   {
+    "uri": "/openehr/transforms",
+    "method": "GET",
+    "handler": "getTransforms"
+  },
+  {
+    "uri": "/openehr/headings",
+    "method": "GET",
+    "handler": "getHeadings"
+  },
+  {
     "uri": "/openehr/heading/:heading/:patientId",
     "method": "GET",
     "handler": "getHeadingData"

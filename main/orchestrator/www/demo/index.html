@@ -56,12 +56,9 @@
               <button id="getHeadingBtn">Fetch A Heading</button>
             </div>
             <br />
+
             <div>
-              <button id="getAllergySchemaInBtn">Fetch Allergy Input Schema from OpenEHR</button>
-            </div>
-            <br />
-            <div>
-              <button id="getAllergySchemaOutBtn">Fetch Allergy Output Schema from OpenEHR</button>
+              <button id="getSchemaBtn">Fetch Heading Schema from OpenEHR</button>
             </div>
             <br />
             <div>
@@ -195,7 +192,7 @@
             <table>
               <tr>
                 <td colspan="2">
-                  <h4 id="getHeaadingTitle">Get Heading Records</h4>
+                  <h4 id="getHeadingTitle">Get Heading Records</h4>
                 </td>
               </tr>
               <tr>
@@ -220,6 +217,45 @@
                 <td colspan="2">
                   <button id="getHeadingGoBtn">Fetch</button>
                   <button id="cancelgetHeadingBtn">Cancel</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Generic GET Schema Form -->
+
+
+          <div id="getSchemaForm">
+            <table>
+              <tr>
+                <td colspan="2">
+                  <h4 id="getSchemaTitle">Get Heading Schema</h4>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Heading Name
+                </td>
+                <td>
+                  <select id="getSchemaHeadingName">
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Schema Format
+                </td>
+                <td>
+                  <select id="getSchemaFormat">
+                    <option value="in">Input</option>
+                    <option value="out">Output</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <button id="getSchemaGoBtn">Fetch</button>
+                  <button id="cancelGetSchemaBtn">Cancel</button>
                 </td>
               </tr>
             </table>

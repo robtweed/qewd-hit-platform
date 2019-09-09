@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 September 2019
+  9 September 2019
 
   GET /openehr/heading/:heading/:patientId
 
@@ -67,10 +67,7 @@ module.exports = function(args, finished) {
   var selectedUid;
   var sourceIdMap = args.req.qewdSession.data.$(['openEHR', 'sourceIdMap']);
 
-  if (format === 'pulsetile_detail') {
-    if (!args.req.query.uid) {
-      return finished({error: 'The pulsetile_detail format requires you to specify a Composition Uid'});
-    }
+  if (format === 'pulsetile_detail' && args.req.query.uid) {
     selectedUid = args.req.query.uid;
     var mappedUid = sourceIdMap.$(selectedUid);
 
@@ -119,17 +116,31 @@ module.exports = function(args, finished) {
       var uid;
 
       for (uid in results) {
-        if (format === 'pulsetile_synopsis' || format === 'pulsetile_summary' || format !== 'pulsetile_detail' || uid === selectedUid) {
+        //if (format === 'pulsetile_synopsis' || format === 'pulsetile_summary' || format === 'pulsetile_detail' || uid === selectedUid) {
           record = results[uid];
           record.uid = uid;
           if (format === 'pulsetile_synopsis' || format === 'pulsetile_summary' || format === 'pulsetile_detail') {
             record.sourceId = 'ethercis-' + uid.split('::')[0];
             sourceIdMap.$(record.sourceId).value = uid;
           }
-          record.patientId = patientId;
-          record.patientName = patientName;
-          transformedData[uid] = transform(template, record, headingHelpers);
-        }
+          // if the request is for pulsetile_detail for just one sourceId,
+          //  just apply the transform for the specific sourceId
+
+          if (format === 'pulsetile_detail' && selectedUid === record.sourceId) {
+            record.patientId = patientId;
+            record.patientName = patientName;
+            transformedData[uid] = transform(template, record, headingHelpers);
+          }
+          else if (!selectedUid) {
+
+            // this applies to all other pulsetile_* formats OR if pulsetile_detail has been
+            // requested for all uids
+
+            record.patientId = patientId;
+            record.patientName = patientName;
+            transformedData[uid] = transform(template, record, headingHelpers);
+          }
+        //}
       }
       if (format === 'summaryHeadings') {
         var summary = [];
@@ -157,7 +168,7 @@ module.exports = function(args, finished) {
         }
         return finished({return_as_array: results});
       }
-      if (format === 'pulsetile_detail') {
+      if (format === 'pulsetile_detail' && selectedUid) {
         //console.log('&&& pulsetile_detail - selectedUid = ' + selectedUid);
         //console.log('&&& transformedData = ' + JSON.stringify(transformedData, null, 2));
         return finished(transformedData[selectedUid]);

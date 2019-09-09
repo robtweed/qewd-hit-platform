@@ -374,6 +374,7 @@ $(document).ready(function() {
       headers: getHeaders()
     })
     .done(function(data) {
+      delete data.token;
       hideForms();
       $('#mpiBtn').show();
       $('#contentTitle').text(heading + ' data (from OpenEHR in ' + format + ' format)');

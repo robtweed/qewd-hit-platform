@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  6 August 2019
+  10 September 2019
 
 */
 
@@ -33,7 +33,7 @@ module.exports = function(args, finished) {
   var role = args.session.openid.role;
   var patientId;
 
-  if (role === 'idcr') {
+  if (role.toLowerCase() === 'idcr') {
     patientId = args.id;
     if (!patientId) {
       if (!args.session.nhsNumber && args.session.openid.userId) {

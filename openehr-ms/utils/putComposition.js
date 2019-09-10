@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  23 August 2019
+  10 September 2019
 
 */
 
@@ -75,6 +75,7 @@ module.exports = function(compositionId, args, callback) {
 
         cachedCompositions.$(['by_ehrId', ehrId, compositionId]).delete();
         cachedComposition.delete();
+        cachedCompositions.$(['by_heading', heading, ehrId]).delete();
 
         if (format === 'pulsetile') {
           var uid = 'ethercis-' + response.compositionUid.split('::')[0];

@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  23 August 2019
+  10 September 2019
 
   DELETE /openehr/composition/:uid
 
@@ -65,6 +65,7 @@ module.exports = function(args, finished) {
       // remove from cache
       var ehrId = cachedComposition.$('ehrId').value;
       cachedCompositions.$(['by_ehrId', ehrId, uid]).delete();
+      cachedCompositions.$(['by_heading', ehrId, uid]).delete();
       cachedComposition.delete();
 
       finished(responseObj);

@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  14 June 2019
+  10 September 2019
 
 */
 
@@ -54,8 +54,12 @@ module.exports = function(nhsNumber, templateId, flatJson, args, callback) {
           var cachedCompositions = args.req.qewdSession.data.$(['openEHR', 'compositions']);
           var cachedCompositionsForEhrId = cachedCompositions.$(['by_ehrId', ehrId]);
           cachedCompositionsForEhrId.forEachChild(function(uid) {
-            cachedCompositions.$(['by_uid', uid]).delete();
+            var cachedComposition = cachedCompositions.$(['by_uid', uid]);
+            var heading = cachedComposition.$('heading').value;
+            cachedCompositions.$(['by_heading', heading, ehrId, uid]).delete();
+            cachedComposition.delete();
           });
+
           cachedCompositionsForEhrId.delete();
 
           callback({

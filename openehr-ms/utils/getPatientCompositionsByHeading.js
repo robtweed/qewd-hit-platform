@@ -24,28 +24,30 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  22 August 2019
+  10 September 2019
 
 */
 
 var getEhrId = require('./getEhrId');
 var getPatientCompositionsByTemplateId = require('../interfaces/getPatientCompositionsByTemplateId');
 
-function getUidArray(cachedPatientCompositions) {
-  var arr = [];
-  cachedPatientCompositions.forEachChild(function(uid) {
-    arr.push(uid);
-  });
-  return arr;
-}
-
-function setUidArray(ehrId, heading, uidArr, cachedCompositions) {
+function cacheCompositions(ehrId, heading, uidArr, cachedCompositions) {
+  var cachedHeading = cachedCompositions.$(['by_heading', heading, ehrId]);
   uidArr.forEach(function(uid) {
     cachedCompositions.$(['by_ehrId', ehrId, uid]).value = '';
     var cachedComposition = cachedCompositions.$(['by_uid', uid]);
     cachedComposition.$('ehrId').value = ehrId;
     cachedComposition.$('heading').value = heading;
+    cachedHeading.$(uid).value = '';
   });
+}
+
+function getCachedHeadingUids(cachedHeadings) {
+  var arr = [];
+  cachedHeadings.forEachChild(function(uid) {
+    arr.push(uid);
+  });
+  return arr;
 }
 
 module.exports = function(nhsNumber, heading, args, callback) {
@@ -59,11 +61,10 @@ module.exports = function(nhsNumber, heading, args, callback) {
       var sessionId =response.sessionId;
 
       var cachedCompositions = args.req.qewdSession.data.$(['openEHR', 'compositions']);
-      var cachedPatientCompositions = cachedCompositions.$(['by_ehrId', ehrId]);
-      if (cachedPatientCompositions.exists) {
+      var cachedHeadings = cachedCompositions.$(['by_heading', heading, ehrId]);
+      if (cachedHeadings.exists) {
         callback({
-          //uids: cachedPatientCompositions.getDocument(true),
-          uids: getUidArray(cachedPatientCompositions),
+          uids: getCachedHeadingUids(cachedHeadings),
           sessionId: sessionId,
           ehrId: ehrId
         });
@@ -76,8 +77,7 @@ module.exports = function(nhsNumber, heading, args, callback) {
           if (response.error) {
             return callback(response);
           }
-          setUidArray(ehrId, heading, response.uids, cachedCompositions);
-          //cachedPatientCompositions.setDocument(response.uids)
+          cacheCompositions(ehrId, heading, response.uids, cachedCompositions);
           callback({
             uids: response.uids,
             sessionId: sessionId,

@@ -2,7 +2,10 @@
 
 - [Background](#background)
 - [Configuring](#configuring)
-- [Starting the Orchestrator](#starting-the-orchestrator)
+- [Starting the Orchestrator in Installation Mode](#starting-the-orchestrator-in-installation-mode)
+- [Install/Configure and Start the other MicroServices](#installconfigure-and-start-the-other-microservices)
+- [Restart the Orchestrator](#restart-the-orchestrator)
+- [Correcting Mistakes in your Settings File](#correcting-mistakes-in-your-settings-file)
 - [Persisting Data on the Orchestrator](#persisting-data-on-the-orchestrator)
 
 
@@ -312,10 +315,12 @@ If you are running the Orchestrator on its own physical host machine, leave out 
 
 
 
-## Correcting Mistakes in your *settings.json* File
+## Correcting Mistakes in your Settings File
 
 It is possible that you'll have made some mistake(s) in your *settings.json* file parameters. If so,
-you'll need to shut down all your Containers and repeat the steps above.  However, before you do so,
+you'll need to shut down all your Containers and repeat the steps above.  
+
+However, before you do so,
 you'll need to revert the Orchestrator's *config.json* file back to its initial installation mode.
 
 The easiest way to do this is to look in the *~/qewd-hit-platform/main/configuration* folder

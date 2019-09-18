@@ -6,3 +6,8 @@ docker run -it --name audit_service --rm --network qewd-hit -v ~/qewd-hit-platfo
 If running containers on different hosts:
 
 docker run -it --name audit_service --rm -p 8080:8080 -v ~/qewd-hit-platform/audit-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+
+
+RPi
+
+docker run -it --name audit_service --rm -p 8080:8080 -v ~/qewd-hit-platform/audit-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server-rpi   

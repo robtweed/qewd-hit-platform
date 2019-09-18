@@ -1,0 +1,8 @@
+{
+  "qewd_up": true,
+  "qewd": {
+    "managementPassword": "=> either(oidc_provider.managementPassword, 'oidc')",
+    "serverName": "=> either(oidc_provider.serverName, 'HIT Platform OpenId-Connect Provider')",
+    "poolSize": "{<oidc_provider.poolSize>}"
+  }
+}

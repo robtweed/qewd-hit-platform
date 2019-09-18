@@ -1,0 +1,55 @@
+{
+  "qewd_up": true,
+  "orchestrator": {
+    "qewd": {
+      "serverName": "=> either(orchestrator.serverName, 'HIT Platform Orchestrator')",
+      "poolSize": "{<orchestrator.poolSize>}"
+    }
+  },
+  "permit_application_switch": {
+    "qewd-monitor-ms": {
+      "qewd-monitor": true
+    }
+  },
+  "microservices": [
+    {
+      "name": "oidc_client",
+      "apis": {
+        "import": true,
+        "imported": true
+      },
+      "host": "=> createHost(microservices.oidc_client.protocol,microservices.oidc_client.host)",
+      "port": "{<microservices.oidc_client.port>}"
+    },
+    {
+      "name": "mpi_service",
+      "apis": {
+        "import": true,
+        "imported": true
+      },
+      "host": "=> createHost(microservices.mpi_service.protocol,microservices.mpi_service.host)",
+      "port": "{<microservices.mpi_service.port>}"
+    },
+    {
+      "name": "audit_service",
+      "apis": {
+        "import": true,
+        "imported": true
+      },
+      "host": "=> createHost(microservices.audit_service.protocol,microservices.audit_service.host)",
+      "port": "{<microservices.audit_service.port>}"
+    },
+    {
+      "name": "openehr_service",
+      "apis": {
+        "import": true,
+        "imported": true
+      },
+      "host": "=> createHost(microservices.openehr_service.protocol,microservices.openehr_service.host)",
+      "port": "{<microservices.openehr_service.port>}"
+    }
+  ],
+  "jwt": {
+    "secret": "{<jwt_secret>}"
+  }
+}

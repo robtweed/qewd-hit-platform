@@ -1,7 +1,7 @@
 /*
 
  ----------------------------------------------------------------------------
- | oidc-provider: OIDC Provider QEWD-Up MicroService                        |
+ | QEWD HIT Platform: FHIR MPI Microservice Installer                       |
  |                                                                          |
  | Copyright (c) 2019 M/Gateway Developments Ltd,                           |
  | Redhill, Surrey UK.                                                      |
@@ -28,72 +28,61 @@
 
 */
 
-var load = require('./loader');
-var keepAlive = require('./keepAlive');
-//var loadInitialData = require('./loadInitialData');
-var qewd_interface = require('./qewd_interface');
-var oidc_config;
+var fs = require('fs-extra');
+var path = require('path');
+var transform = require('qewd-transform-json').transform;
 
-function start(app, bodyParser) {
-
-  try {
-    oidc_config = require('/opt/qewd/mapped/configuration/oidc.json');
-  }
-  catch(err) {
-    console.log('OIDC Provider has not yet been configured - using minimal startup');
-    return;
-  }
-
-  // create the Promise-based QEWD send() method version
-
-  qewd_interface.call(this);
-
-  this.oidc = oidc_config;
-  var _this = this;
-
-  // start the QEWD session for database interactions
-
-  this.send_promise({
-    type: 'ewd-register',
-    application: 'oidc-provider'
-  })
-  .then (function(result) {
-    _this.oidc.token = result.message.token;
-
-    _this.send_promise({
-      type: 'login',
-      params: {
-        password: _this.userDefined.config.managementPassword
-      }
-    }
-  )
-  .then (function(result) {
-  
-    // configure the OIDC Provider using the /configuration/data.json file
-    //  unless already populated
-
-    var msg = {type: 'configure'};
-    _this.send_promise(msg)
-
-  .then (function(result) {
-
-    // fetch or generate the keystore & config params
-
-    var msg = {type: 'getParams'};
-    _this.send_promise(msg)
-
-  .then (function(result) {
-
-    // start up the OIDC Provider
-    load.call(_this, app, bodyParser, result.message);
-
-    // start timed keepalive messages to maintain session
-            
-    keepAlive.call(_this);
-  });
-  });
-  });
-  });
+function createJSONFile(obj, filename) {
+  var filePath = path.join('/opt/qewd/mapped/configuration', filename);
+  //console.log('file path: ' + filePath);
+  fs.outputJsonSync(filePath, obj, {spaces: 2});
+  //fs.chmodSync(packageJsonFile, '0664');
 }
 
-module.exports = start;
+var helpers = {
+  createUri: function(protocol, host, port, path) {
+    var uri = protocol + '://' + host;
+    if (port === 80 || port === 443) {
+      port = '';
+    }
+    if (port && port !== '') {
+      uri = uri + ':' + port;
+    }
+    if (path) {
+      uri = uri + path;
+    }
+    return uri;
+  }
+};
+
+var settings;
+
+try {
+  settings = require('./configuration/settings.json');
+}
+catch(err) {
+  console.log('Error! Unable to load ./configuration/settings.json');
+  return;
+}
+
+//console.log('settings: ' + JSON.stringify(settings, null, 2));
+
+var config_template;
+
+try {
+  config_template = require('./configuration/config_template.json');
+}
+catch(err) {
+  console.log('Error! Unable to load ./configuration/config_template.json');
+  return;
+}
+
+var config = transform(config_template, settings, helpers);
+
+//console.log('config: ' + JSON.stringify(config, null, 2));
+
+createJSONFile(config, 'config.json');
+
+console.log('Successfully configured the mpi_service MicroService');
+console.log('Restart the mpi_service container');
+

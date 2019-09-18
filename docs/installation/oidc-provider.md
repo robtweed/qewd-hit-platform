@@ -21,65 +21,67 @@ Although it is provided as part of the HIT Platform repository, it does not, str
  behave as a MicroService: rather it is a standalone QEWD-Up System to which users' browsers 
 will be redirected in order for them to login.
 
-The OIDC Provider is largely pre-configured for you, but you'll need to make a few, relatively minor,
-adjustments in order to get it working.
+The OIDC Provider needs to be configured in order to get it working.
 
 ## Configuring the OIDC Provider
 
+Make sure you have first followed the steps for configuring the Orchestrator. Assuming 
+you have done, you'll now have the *settings.json* file available for use on the
+OIDC Provider Service.
+
 There are 2 steps to configuring the OIDC Provider.
 
-- properly defining its IP address or Domain Name and that of the Orchestrator (to which it
-needs to redirect)
+- applying the *settings.json* file
 
 - adding any custom data to its user database.  Typically you'll want to add one or more patient
 names with their associated NHS Numbers (which will probably be fictitious). Once again, you'll find
 that some initial data has been pre-configured, but you can amend and/or add to that data.
 
 
-### Defining the IP Addresses/Domain Names
+### Applying the Settings File
 
-Assuming you cloned the repository into your home directory, you need to edit the file:
+If you look in the */oidc-provider/configuration* folder, you'll see a *config.json* file.  This is
+pre-built for you and will start up the OIDC Provider's QEWD system in a basic installation mode.
+You can then apply the settings to fully configure it for use as the QEWD HIT Platform OIDC Provider.
 
-        ~/qewd-hit-platform/oidc-provider/configuration/oidc.json
+Here's the steps:
 
-Find every line containing *http://192.168.1.100* and replace this with the IP address or
-Domain name for the host system on which you'll be running the OIDC Provider.
+1) Start the OIDC Provider:
 
-You'll see from these lines in the *oidc.json* file that it's expecting that you'll start
-the OIDC provider with it listening on port 8081 (you'll specify this in the *docker run* command
-when you start it). 
+        docker run -it --name oidc_provider --rm -v ~/qewd-hit-platform/oidc-provider:/opt/qewd/mapped rtweed/qewd-server
 
-        "oidc_provider": {
-          "issuer": {
-            "host": "http://192.168.1.100",
-            "port": 8081
+2) From another process, shell into the Container:
 
+        docker exec -it oidc_provider bash
 
- If you want to use a different listener port for the OIDC Provider, change the *"port"* value appropriately.
+You should see a prompt similar to this:
 
+        root@f49e55e68ae2:/opt/qewd#
 
-You'll see from these lines in the *oidc.json* file that it's expecting that you'll be running
-the Orchestrator with it listening on port 8080 (you specified this in the *docker run* command
-when you started the Orchestrator). 
+Now type the commands:
 
-          "ui": {
-            "login_form_title": "OpenId-Connect Authentication Service Log In",
-            "home_page_url": "http://192.168.1.100:8080/demo"
-          },
-          "ui_app": {
-            "qewd-monitor-ms": {
-              "home_page_url": "http://192.168.1.100:8080/qewd-monitor-ms/reload.html"
-            }
-          }
-        },
-        "orchestrator": {
-          "host": "http://192.168.1.100",
-          "port": 8080
-        },
+        cd mapped
+        node install
+
+Provided you haven't introduced any JSON syntax errors into the *settings.json* file, you should see:
+
+        Successfully configured the oidc_provider Service
+        Restart the oidc_provider container
 
 
- If you started the Orchestrator using a different listener port, 
- change the *8080* in the lines above to the appropriate port number.
+You'll find 3 new or edited files in the */oidc-provider/configuration* folder:
+
+- config.json: now ready for full QEWD HIT Platform use
+- oidc.json: the OIDC settings it will use at startup
+- data.json: See below
+
+
+Exit from the Container's shell by typing the command:
+
+        exit
+
+
+3) You can now stop the OIDC Provider Container by typing *CTRL & C*
 
 
 ### Defining/Adding Custom Data
@@ -94,6 +96,8 @@ configuration parameters and user database.
 Assuming you cloned the repository into your home directory, you need to edit the file:
 
         ~/qewd-hit-platform/oidc-provider/configuration/data.json
+
+This was created during the earlier installation/configuration step above.
 
 You'll see that this file defines a user named Rob Tweed for a number of applications 
 (or Clients in OIDC parlance):
@@ -205,6 +209,10 @@ make sure that you have defined a Docker Bridged Network and make use of it when
 The OIDC Provider will listen on port 8081.  To listen on a different port, change the *-p* parameter, eg:
 
         -p 3001:8080
+
+Note, the listener port (the first one before the colon) must correspond to the port 
+defined in the *settings.json* file for the OIDC Provider.
+
 
 To run the OIDC Provider container as a background daemon process, change the *-it* parameter to *-d*:
 

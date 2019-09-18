@@ -2,27 +2,25 @@
   "Custom_Claims": {
     "profile": [
       "userId",
-      "role",
-      "firstName",
-      "lastName"
+      "role"
     ]
   },
   "Clients": [
     {
       "client_id": "test_client",
-      "client_secret": "dcae4e98-61e7-43f5-bcac-fe196cc5d627",
+      "client_secret": "{{oidc_provider.clients.test_client.client_secret}}",
       "post_logout_uri_path": "/demo",
       "redirect_uri_path": "/auth/token/test_client"
     },
     {
       "client_id": "pulsetile",
-      "client_secret": "dcae4e98-61e7-43f5-bcac-fe196cc5d627",
+      "client_secret": "{{oidc_provider.clients.pulsetile.client_secret}}",
       "post_logout_uri_path": "/",
       "redirect_uri_path": "/auth/token/pulsetile"
     },
     {
       "client_id": "openehr-maint",
-      "client_secret": "openehr-maint-secret",
+      "client_secret": "{{oidc_provider.clients['openehr-maint'].client_secret}}",
       "post_logout_uri_path": "/openehr-maint",
       "ui": {
         "login_form_title": "OpenEHR Maintenance Log In",
@@ -32,7 +30,7 @@
     },
     {
       "client_id": "admin",
-      "client_secret": "admin-secret",
+      "client_secret": "{{oidc_provider.clients.admin.client_secret}}",
       "post_logout_uri_path": "/oidc-provider-admin",
       "ui": {
         "login_form_title": "Administrator Log In",
@@ -42,7 +40,7 @@
     },
     {
       "client_id": "qewd-monitor-ms",
-      "client_secret": "qewd-monitor-ms-secret",
+      "client_secret": "{{oidc_provider.clients['qewd-monitor-ms'].client_secret}}",
       "post_logout_uri_path": "/qewd-monitor-ms",
       "ui": {
         "login_form_title": "QEWD Monitor Admininstrator Log In",
@@ -68,9 +66,9 @@
         "email": "rob.tweed@example.com",
         "claims": {
           "userId": 9999999001,
-          "firstName": "Rob",
-          "lastName": "Tweed",
-          "role": "IDCR"
+          "given_name": "Rob",
+          "family_name": "Tweed",
+          "role": "idcr"
         }
       }
     ],

@@ -1,0 +1,12 @@
+{
+  "qewd_up": true,
+  "qewd": {
+    "serverName": "=> either(microservices.oidc_client.serverName, 'OIDC Client QEWD Service')",
+    "poolSize": "{<microservices.oidc_client.poolSize>}"
+  },
+  "ms_name": "oidc_client",
+  "imported": true,
+  "jwt": {
+    "secret": "{<jwt_secret>}"
+  }
+}

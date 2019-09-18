@@ -1,9 +1,13 @@
 If starting all containers on the same host:
 
-sudo docker run -it --name mpi_service --rm --network qewd-hit -v ~/qewd-hit-platform/fhir-mpi:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+docker run -it --name mpi_service --rm --network qewd-hit -v ~/qewd-hit-platform/fhir-mpi:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
 
 
 If starting all containers on different hosts:
 
-sudo docker run -it --name mpi_service --rm -p 8083:8080 -v ~/qewd-hit-platform/fhir-mpi:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+docker run -it --name mpi_service --rm -p 8083:8080 -v ~/qewd-hit-platform/fhir-mpi:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
 
+
+Across RPis:
+
+docker run -it --name mpi_service --rm -p 8080:8080 -v ~/qewd-hit-platform/fhir-mpi:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server-rpi

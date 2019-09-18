@@ -1,0 +1,52 @@
+{
+  "orchestrator": {
+    "protocol": "http",
+    "host": "192.168.1.100",
+    "port": 8080,
+    "poolSize": 3,
+    "applications": {
+      "qewd-monitor-ms": "QEWD Monitor",
+      "openehr-maint": "OpenEHR Maintenance",
+      "oidc-provider-admin": "OIDC Provider Administration"
+    }
+  },
+  "microservices": {
+    "oidc_client": {
+      "poolSize": 3
+    },
+    "mpi_service": {
+      "poolSize": 3
+    },
+    "audit_service": {
+      "poolSize": 3
+    },
+    "openehr_service": {
+      "poolSize": 3
+    }
+  },
+  "oidc_provider": {
+    "protocol": "http",
+    "host": "192.168.1.100",
+    "port": 8081,
+    "poolSize": 3,
+    "session_expiry": 1200000,
+    "clients": {
+      "test_client": {
+        "client_secret": "=> createUuid()"
+      },
+      "pulsetile": {
+        "client_secret": "=> createUuid()"
+      },
+      "openehr-maint": {
+        "client_secret": "=> createUuid()"
+      },
+      "admin": {
+        "client_secret": "=> createUuid()"
+      },
+      "qewd-monitor-ms": {
+        "client_secret": "=> createUuid()"
+      }
+    }
+  },
+  "jwt_secret": "=> createUuid()"
+}

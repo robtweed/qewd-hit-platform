@@ -3,3 +3,8 @@ docker run -it --name openehr_service --rm --network qewd-hit -p 8084:8080 -v ~/
 docker run -it --name openehr_service --rm --network qewd-hit -v ~/qewd-hit-platform/openehr-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
 
 
+Across RPIs:
+
+docker run -it --name openehr_service --rm -p 8080:8080 -v ~/qewd-hit-platform/openehr-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server-rpi
+
+

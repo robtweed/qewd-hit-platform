@@ -14,20 +14,67 @@ It allow the retrieval and posting/updating of instances of templates against a 
 the Flat JSON representation of a template as the basis of the input and output of patient
 clinical data.
 
+The OpenEHR Service needs to be configured in order to get it working.  There are 2 steps to this:
+
+- configuring the container using the *settings.json* file
+- configuring access to the OpenEHR machine to which this MicroService will provide the interface
 
 
-## Configuration
+## Configuring the Container
 
-There are two steps to configuring it:
+Make sure you have first followed the steps for configuring the Orchestrator. Assuming 
+you have done, you'll now have the *settings.json* file available for use on the
+OpenEHR MicroService.
 
-- set the correct IP address/Domain Name for the OpenEHR server that you are interfacing
 
-- add the Orchestrator's JWT secret to its *config.json* file.
+### Applying the Settings File
+
+If you look in the */openehr-ms/configuration* folder, you'll see a *config.json* file.  This is
+pre-built for you and will start up the OpenEHR MicroService's QEWD system in a basic installation mode.
+You can then apply the settings to fully configure it for use as the QEWD HIT Platform
+ OpenEHR MicroService.
+
+Here's the steps:
+
+1) Start the OpenEHR MicroService:
+
+        docker run -it --name openehr_service --rm -v ~/qewd-hit-platform/openehr-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+
+2) From another process, shell into the Container:
+
+        docker exec -it openehr_service bash
+
+You should see a prompt similar to this:
+
+        root@f49e55e68ae2:/opt/qewd#
+
+Now type the commands:
+
+        cd mapped
+        node install
+
+Provided you haven't introduced any JSON syntax errors into the *settings.json* file, you should see:
+
+        Successfully configured the openehr_service MicroService
+        Restart the openehr_service container
+
+
+You'll find a newly edited file in the */openehr-ms/configuration* folder:
+
+- config.json: now ready for full QEWD HIT Platform use
+
+
+Exit from the Container's shell by typing the command:
+
+        exit
+
+
+3) You can now stop the OpenEHR MicroService Container by typing *CTRL & C*
 
 
 ### Configuring your OpenEHR server
 
-Assuming you cloned the repository into your home directory, you need to edit the file:
+Assuming you cloned the repository into your home directory, you now need to edit the file:
 
         ~/qewd-hit-platform/openehr-ms/configuration/openehr.json
 
@@ -39,45 +86,12 @@ YOu need to change the second line:
 to point instead to the IP address/Domain name and port of your OpenEHR server
 
 
-
-### Adding the Orchestrator's JWT Secret
-
-Take a look at the Orchestrator's *config.json* file, eg:
-
-        ~/qewd-hit-platform/main/configuration/config.json
-
-and locate the lines at the end that define the JWT secret (this will have been
-assigned automatically with a randomly-generated uid value).  For example:
+In most cases this is all you will need to change.
 
 
-        "jwt": {
-          "secret": "d7060194-7737-4052-a98a-c7cc364391fa"
-        }
+### Restarting the OpenEHR Interface MicroService
 
-Copy and paste these lines to the end of the OpenEHR service's *config.json* file, eg:
-
-        ~/qewd-hit-platform/openehr-ms/configuration/config.json
-
-For example, it should look something like this:
-
-
-        {
-          "qewd_up": true,
-          "ms_name": "openehr_service",
-          "qewd": {
-            "serverName": "OpenEHR Service",
-            "poolSize": 3
-          },
-          "imported": true,
-          "jwt": {
-            "secret": "d7060194-7737-4052-a98a-c7cc364391fa"
-          }
-        }
-
-
-### Starting the OpenEHR Interface MicroService
-
-You can now start the OpenEHR Interface MicroService.
+You can now re-start the fully-configured OpenEHR Interface MicroService.
 
 If you are running all the Microservices on the same host machine, assuming you've created
 a Docker network named *qewd-hit*:
@@ -97,6 +111,9 @@ The OpenEHR Interface service will listen on port 8080.  To listen on a differen
 change the *-p* parameter, eg:
 
         -p 3000:8080
+
+Note, the listener port (the first one before the colon) must correspond to the port 
+defined in the *settings.json* file for the OpenEHR MicroService.
 
 
 ## Persisting Data on the OpenEHR Interface Service

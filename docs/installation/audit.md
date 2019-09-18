@@ -11,48 +11,64 @@
 This service maintains a log / audit trail of all incoming API requests that were handled by
 the Orchestrator.  They are saved to the YottaDB database on this MicroService instance.
 
+The Audit Service needs to be configured in order to get it working.
+
 
 ## Configuration
 
-All you need to do is to add the Orchestrator's JWT secret to its *config.json* file, as follows:
-
-Take a look at the Orchestrator's *config.json* file, eg:
-
-        ~/qewd-hit-platform/main/configuration/config.json
-
-and locate the lines at the end that define the JWT secret (this will have been
-assigned automatically with a randomly-generated uid value).  For example:
+Make sure you have first followed the steps for configuring the Orchestrator. Assuming 
+you have done, you'll now have the *settings.json* file available for use on the
+Audit MicroService.
 
 
-        "jwt": {
-          "secret": "d7060194-7737-4052-a98a-c7cc364391fa"
-        }
+### Applying the Settings File
 
-Copy and paste these lines to the end of the Audit service's *config.json* file, eg:
+If you look in the */audit-ms/configuration* folder, you'll see a *config.json* file.  This is
+pre-built for you and will start up the Audit MicroService's QEWD system in a basic installation mode.
+You can then apply the settings to fully configure it for use as the QEWD HIT Platform
+ Audit MicroService.
 
-        ~/qewd-hit-platform/audit-ms/configuration/config.json
+Here's the steps:
 
-For example, it should look something like this:
+1) Start the Audit MicroService:
+
+        docker run -it --name audit_service --rm -v ~/qewd-hit-platform/audit-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+
+2) From another process, shell into the Container:
+
+        docker exec -it audit_service bash
+
+You should see a prompt similar to this:
+
+        root@f49e55e68ae2:/opt/qewd#
+
+Now type the commands:
+
+        cd mapped
+        node install
+
+Provided you haven't introduced any JSON syntax errors into the *settings.json* file, you should see:
+
+        Successfully configured the audit_service MicroService
+        Restart the audit_service container
 
 
-        {
-          "qewd_up": true,
-          "ms_name": "audit_service",
-          "qewd": {
-            "serverName": "Audit Service",
-            "poolSize": 3
-          },
-          "imported": true,
-          "jwt": {
-            "secret": "d7060194-7737-4052-a98a-c7cc364391fa"
-          }
-        }
+You'll find a newly edited file in the */audit-ms/configuration* folder:
+
+- config.json: now ready for full QEWD HIT Platform use
 
 
+Exit from the Container's shell by typing the command:
 
-## Starting the Audit MicroService
+        exit
 
-You can now start the Audit MicroService.
+
+3) You can now stop the Audit MicroService Container by typing *CTRL & C*
+
+
+## Re-starting the Audit MicroService
+
+You can now re-start the fully-configured Audit MicroService.
 
 If you are running all the Microservices on the same host machine, assuming you've created
 a Docker network named *qewd-hit*:
@@ -71,6 +87,9 @@ and instead, specify the port on which it will listen, eg:
 The Audit Service will listen on port 8080.  To listen on a different port, change the *-p* parameter, eg:
 
         -p 3000:8080
+
+Note, the listener port (the first one before the colon) must correspond to the port 
+defined in the *settings.json* file for the Audit MicroService.
 
 
 ## Persisting Data on the Audit Service

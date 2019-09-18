@@ -1,0 +1,12 @@
+{
+  "qewd_up": true,
+  "ms_name": "mpi_service",
+  "qewd": {
+    "serverName": "=> either(microservices.mpi_service.serverName, 'FHIR MPI QEWD Service')",
+    "poolSize": "{<microservices.mpi_service.poolSize>}"
+  },
+  "imported": true,
+  "jwt": {
+    "secret": "{<jwt_secret>}"
+  }
+}

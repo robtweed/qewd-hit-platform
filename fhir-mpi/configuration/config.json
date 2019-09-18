@@ -1,9 +1,5 @@
 {
   "qewd_up": true,
   "ms_name": "mpi_service",
-  "qewd": {
-    "serverName": "FHIR MPI QEWD Service",
-    "poolSize": 3
-  },
   "imported": true
 }

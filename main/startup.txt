@@ -8,4 +8,8 @@ Running MicroServices on different hosts:
   docker run -it --name orchestrator --rm -p 8080:8080 -v ~/qewd-hit-platform/main:/opt/qewd/mapped rtweed/qewd-server
 
 
+Running on RPIs:
+
+docker run -it --name orchestrator --rm -p 8080:8080 -v ~/qewd-hit-platform/main:/opt/qewd/mapped rtweed/qewd-server-rpi
+
 

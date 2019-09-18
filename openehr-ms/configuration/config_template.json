@@ -1,0 +1,12 @@
+{
+  "qewd_up": true,
+  "ms_name": "openehr_service",
+  "qewd": {
+    "serverName": "=> either(microservices.openehr_service.serverName, 'OpenEHR Service')",
+    "poolSize": "{<microservices.openehr_service.poolSize>}"
+  },
+  "imported": true,
+  "jwt": {
+    "secret": "{<jwt_secret>}"
+  }
+}

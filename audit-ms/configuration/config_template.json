@@ -1,0 +1,12 @@
+{
+  "qewd_up": true,
+  "ms_name": "audit_service",
+  "qewd": {
+    "serverName": "=> either(microservices.audit_service.serverName, 'Audit Service')",
+    "poolSize": "{<microservices.audit_service.poolSize>}"
+  },
+  "imported": true,
+  "jwt": {
+    "secret": "{<jwt_secret>}"
+  }
+}

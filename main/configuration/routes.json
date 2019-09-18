@@ -53,24 +53,24 @@
     "uri": "/auth/redirect",
     "method": "GET",
     "authenticate": false,
-    "on_microservice": "oidc-client"
+    "on_microservice": "oidc_client"
   },
   {
     "uri": "/api/initialise",
     "method": "GET",
     "authenticate": false,
-    "on_microservice": "oidc-client"
+    "on_microservice": "oidc_client"
   },
   {
     "uri": "/auth/token/:client_id",
     "method": "GET",
     "authenticate": false,
-    "on_microservice": "oidc-client"
+    "on_microservice": "oidc_client"
   },
   {
     "uri": "/auth/logout",
     "method": "GET",
-    "on_microservice": "oidc-client"
+    "on_microservice": "oidc_client"
   },
   {
     "uri": "/audit/record",
@@ -125,16 +125,16 @@
   {
     "uri": "/oidc/admin/:type",
     "method": "GET",
-    "on_microservice": "oidc-client"
+    "on_microservice": "oidc_client"
   },
   {
     "uri": "/oidc/admin/:type",
     "method": "POST",
-    "on_microservice": "oidc-client"
+    "on_microservice": "oidc_client"
   },
   {
     "uri": "/oidc/admin/:type",
     "method": "DELETE",
-    "on_microservice": "oidc-client"
+    "on_microservice": "oidc_client"
   }
 ]

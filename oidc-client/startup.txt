@@ -1,3 +1,15 @@
 If running all microservices on the same host:
 
- docker run -it --name oidc-client --rm --network qewd-hit -p 8082:8080 -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+ docker run -it --name oidc_client --rm --network qewd-hit -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+
+
+On different hosts
+
+ docker run -it --name oidc_client --rm -p 8082:8080 -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+
+
+on RPIs:
+
+ docker run -it --name oidc_client --rm -p 8080:8080 -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server-rpi
+
+

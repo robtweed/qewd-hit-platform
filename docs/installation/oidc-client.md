@@ -13,100 +13,86 @@
 The Orchestrator needs to know how to redirect to and from the OpenId Connect (OIDC) Provider.  This task is
 devolved to the OIDC Client MicroService.
 
-Although it is pre-configured, you'll need to adjust the configuration settings to match those of
-your Orchestrator and the OIDC Provider.
+The OIDC Client needs to be configured in order to get it working.
 
 
 ## Configuring the OIDC Client
 
-There are two cpnfiguration steps:
-
-- configuring the IP addresses/Domain names for your Orchestrator and the OIDC Provider
-- setting the JWT Secret to match that of the Orchestrator
-
-
-### Configuring the IP Addresses
-
-Assuming you cloned the repository into your home directory, you need to edit the file:
-
-        ~/qewd-hit-platform/oidc-client/configuration/oidc.json
+Make sure you have first followed the steps for configuring the Orchestrator. Assuming 
+you have done, you'll now have the *settings.json* file available for use on the
+OIDC Client MicroService.
 
 
-YOu need to locate and change the following lines:
+### Applying the Settings File
 
-        "oidc_provider": {
-          "host": "http://192.168.1.100:8081",
+If you look in the */oidc-client/configuration* folder, you'll see a *config.json* file.  This is
+pre-built for you and will start up the OIDC Client's QEWD system in a basic installation mode.
+You can then apply the settings to fully configure it for use as the QEWD HIT Platform OIDC Client.
 
+Here's the steps:
 
-and
+1) Start the OIDC Client:
 
+        docker run -it --name oidc_client --rm -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
 
-        "orchestrator": {
-          "host": "http://192.168.1.100:8080",
+2) From another process, shell into the Container:
 
+        docker exec -it oidc_client bash
 
-Change the IP address to the correct IP address or Domain Name of the host(s) running the
-OIDC Provider and Orchestrator respectively.  If you started the OIDC Provider and/or the 
-Orchestrator to listen to different ports than 8081 and 8080 respectively, change these too
-within the lines above.
+You should see a prompt similar to this:
 
+        root@f49e55e68ae2:/opt/qewd#
 
-### Setting the JWT Secret
+Now type the commands:
 
-Take a look at the Orchestrator's *config.json* file, eg:
+        cd mapped
+        node install
 
-        ~/qewd-hit-platform/main/configuration/config.json
+Provided you haven't introduced any JSON syntax errors into the *settings.json* file, you should see:
 
-and locate the lines at the end that define the JWT secret (this will have been
-assigned automatically with a randomly-generated uid value).  For example:
-
-
-        "jwt": {
-          "secret": "d7060194-7737-4052-a98a-c7cc364391fa"
-        }
-
-Copy and paste these lines to the end of the OIDC Client's *config.json* file, eg:
-
-        ~/qewd-hit-platform/oidc-client/configuration/config.json
-
-For example, it should look something like this:
+        Successfully configured the oidc_client Service
+        Restart the oidc_client container
 
 
-        {
-          "qewd_up": true,
-          "qewd": {
-            "serverName": "OIDC Client QEWD Server"
-          },
-          "ms_name": "oidc-client",
-          "imported": true,
-          "jwt": {
-            "secret": "d7060194-7737-4052-a98a-c7cc364391fa"
-          }
-        }
+You'll find 2 new or edited files in the */oidc-client/configuration* folder:
+
+- config.json: now ready for full QEWD HIT Platform use
+- oidc.json: the OIDC settings it will use at startup
 
 
-## Starting the OIDC Client
+Exit from the Container's shell by typing the command:
 
-You can now start the OIDC Client MicroService.
+        exit
+
+
+3) You can now stop the OIDC Client Container by typing *CTRL & C*
+
+
+## Re-starting the OIDC Client
+
+You can now start the operational OIDC Client MicroService.
 
 If you are running all the Microservices on the same host machine, assuming you've created
 a Docker network named *qewd-hit*:
 
-        docker run -it --name oidc-client --rm --network qewd-hit -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+        docker run -it --name oidc_client --rm --network qewd-hit -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
 
 To run the OIDC Client Container as a background daemon process, change the *-it* parameter to *-d*:
 
-        docker run -d --name oidc-client --rm --network qewd-hit -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+        docker run -d --name oidc_client --rm --network qewd-hit -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
 
 
 If you are running the OIDC Client on its own physical host machine, leave out the *--network* parameter, 
 and instead, specify the port on which it will listen, eg:
 
-        docker run -d --name oidc-client --rm -p 8080:8080 -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+        docker run -d --name oidc_client --rm -p 8080:8080 -v ~/qewd-hit-platform/oidc-client:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
 
 The OIDC Client will listen on port 8080.  To listen on a different port, change the *-p* parameter, eg:
 
         -p 3000:8080
+
+Note, the listener port (the first one before the colon) must correspond to the port 
+defined in the *settings.json* file for the OIDC Client MicroService.
 
 
 ## Testing the Orchestrator, OIDC Provider and OIDC Client
@@ -123,7 +109,7 @@ Orchestrator, eg:
         http://192.168.1.100:8080/demo
 
 Change the IP address and port appropriately for your host system on which you're running
-the orchestrator.
+the Orchestrator.
 
 
 You should see this initially and briefly display a set of buttons before it redirects

@@ -1,35 +1,35 @@
 {
   "oidc_provider": {
     "issuer": {
-      "host": "http://192.168.1.100",
-      "port": 8081
+      "host": "{{oidc_provider.protocol}}://{{oidc_provider.host}}",
+      "port": "{{oidc_provider.port}}"
     },
     "path_prefix": "/openid",
     "configuration_options": {
       "cookies": {
         "long": {
           "httpOnly": true,
-          "maxAge": 1200000
+          "maxAge": "=> either(oidc_provider.session_expiry, 1200000)"
         }
       },
       "ttl": {
-        "IdToken": 1200
+        "IdToken": "=> getExpiry(oidc_provider.session_expiry)"
       },
       "extraParams": ["ui_app"]
     },
     "ui": {
       "login_form_title": "OpenId-Connect Authentication Service Log In",
-      "home_page_url": "http://192.168.1.100:8080/demo"
+      "home_page_url": "=> createUri(orchestrator.protocol,orchestrator.host,orchestrator.port, '/demo')"
     },
     "ui_app": {
       "qewd-monitor-ms": {
-        "home_page_url": "http://192.168.1.100:8080/qewd-monitor-ms/reload.html"
+        "home_page_url": "=> createUri(orchestrator.protocol,orchestrator.host,orchestrator.port, '/reload.html')"
       }
     }
   },
   "orchestrator": {
-    "host": "http://192.168.1.100",
-    "port": 8080
+    "host": "{{orchestrator.protocol}}://{{orchestrator.host}}",
+    "port": "{{orchestrator.port}}"
   },
   "documentName": "OIDC",
   "use2FA": false,

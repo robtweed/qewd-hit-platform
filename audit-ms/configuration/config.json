@@ -1,9 +1,4 @@
 {
   "qewd_up": true,
-  "ms_name": "audit_service",
-  "qewd": {
-    "serverName": "Audit Service",
-    "poolSize": 3
-  },
   "imported": true
 }

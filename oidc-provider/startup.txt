@@ -4,3 +4,9 @@ This is a separate, self-standing QEWD service, so always start using
 
 
 change 8081 to whatever port you want the Provider to listen on
+
+
+RPi:
+
+ docker run -it --name oidc_provider --rm -p 8080:8080 -v ~/qewd-hit-platform/oidc-provider:/opt/qewd/mapped rtweed/qewd-server-rpi  
+

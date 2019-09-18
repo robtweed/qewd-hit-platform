@@ -2,8 +2,9 @@
 
 
 - [Background](#background)
-- [Defining the IP Addresses/Domain Names](#defining-the-ip-addressesdomain-names)
-- [Defining/Adding Custom Data](#definingadding-custom-data)
+- [Configuring the OIDC Provider](#configuring-the-oidc-provider)
+  - [Applying the Settings File](#applying-the-settings-file)
+  - [Defining/Adding Custom Data](#definingadding-custom-data)
 - [Starting the OIDC Provider](#starting-the-oidc-provider)
 - [Persisting Data on the OIDC Provider](#persisting-data-on-the-oidc-provider)
 
@@ -195,7 +196,7 @@ Note that the email addresses can be non-existent dummy ones - they are not used
 purpose than as a login username.
 
 
-### Starting the OIDC Provider
+## Starting the OIDC Provider
 
 You can now start the OIDC Provider.
 

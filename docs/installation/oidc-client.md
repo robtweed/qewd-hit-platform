@@ -2,8 +2,8 @@
 
 
 - [Background](#background)
-- [Configuring](#configuring-the-oidc-client)
-- [Starting the OIDC Client](#starting-the-oidc-client)
+- [Configuring the OIDC Client](#configuring-the-oidc-client)
+- [Re-starting the OIDC Client](#re-starting-the-oidc-client)
 - [Prelimiinary Testing](#testing-the-orchestrator-oidc-provider-and-oidc-client)
 - [Persisting Data on the OIDC Client](#persisting-data-on-the-oidc-client)
 

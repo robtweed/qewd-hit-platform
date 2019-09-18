@@ -1,8 +1,10 @@
 # OpenEHR Interface Service
 
 - [Background](#background)
-- [Configuration](#configuration)
-- [Starting the OpenEHR Interface MicroService](#starting-the-openehr-interface-microService)
+- [Configuring the Container](#configuring-the-container)
+  - [Applying the Settings File](#applying-the-settings-file)
+  - [Configuring your OpenEHR server](#configuring-your-openehr-server)
+- [Restarting the OpenEHR Interface MicroService](#re-starting-the-openehr-interface-microService)
 - [Persisting Data on the OpenEHR Interface Service](#persisting-data-on-the-openehr-interface-service)
 
 
@@ -89,9 +91,9 @@ to point instead to the IP address/Domain name and port of your OpenEHR server
 In most cases this is all you will need to change.
 
 
-### Restarting the OpenEHR Interface MicroService
+## Restarting the OpenEHR Interface MicroService
 
-You can now re-start the fully-configured OpenEHR Interface MicroService.
+You can now re-start the Container which will now run as the fully-configured OpenEHR Interface MicroService.
 
 If you are running all the Microservices on the same host machine, assuming you've created
 a Docker network named *qewd-hit*:

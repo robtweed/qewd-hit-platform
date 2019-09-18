@@ -2,7 +2,7 @@
 
 - [Background](#background)
 - [Configuration](#configuration)
-- [Starting the Audit MicroService](#starting-the-audit-microservice)
+- [Re-Starting the Audit MicroService](#re-starting-the-audit-microservice)
 - [Persisting Data on the Audit Service](#persisting-data-on-the-audit-service)
 
 
@@ -68,7 +68,7 @@ Exit from the Container's shell by typing the command:
 
 ## Re-starting the Audit MicroService
 
-You can now re-start the fully-configured Audit MicroService.
+You can now re-start the Container which will now run as the fully-configured Audit MicroService.
 
 If you are running all the Microservices on the same host machine, assuming you've created
 a Docker network named *qewd-hit*:

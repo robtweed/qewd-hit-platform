@@ -2,7 +2,7 @@
 
 - [Background](#background)
 - [Configuring](#configuring-the-fhir-mpi-service)
-- [Starting](#starting-the-fhir-mpi-microService)
+- [Starting/Re-starting](#re-starting-the-fhir-mpi-microService)
 - [Persisting Data on the FHIR MPI MicroService](#persisting-data-on-the-fhir-mpi-microService)
 
 
@@ -70,9 +70,9 @@ Exit from the Container's shell by typing the command:
 3) You can now stop the FHIR MPI MicroService Container by typing *CTRL & C*
 
 
-## Starting the FHIR MPI MicroService
+## Re-starting the FHIR MPI MicroService
 
-You can now start the properly-configured FHIR MPI MicroService.
+You can now restart the Container, which will now run as the fully-configured FHIR MPI MicroService.
 
 If you are running all the Microservices on the same host machine, assuming you've created
 a Docker network named *qewd-hit*:

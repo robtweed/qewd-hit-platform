@@ -44,8 +44,9 @@ module.exports = function(flatJson) {
     value = flatJson[path];
 
     // pre-process to sort out | anomalies
+    path = path.replace('|','/|');
 
-    if (path.indexOf('|') !== -1) {
+   /*  if (path.indexOf('|') !== -1) {
       var pieces = path.split('|');
       var prev;
       var lc;
@@ -68,7 +69,7 @@ module.exports = function(flatJson) {
         path = pieces.join('|');
       }
     }
-
+ */
     // now begin processing
 
     pieces = path.split('/');

@@ -100,9 +100,26 @@ module.exports = function(flatJson) {
             ref[name][index] = {};
           }
         }
-        if (typeof ref[name][index] === 'undefined') {
-          ref[name][index] = {};
-        }
+        else {
+          if (typeof ref[name] === 'undefined') {
+              ref[name] = [];
+              if (ix === lastIndex) {
+                  ref[name][index] = value;
+              }
+              else {
+                  ref[name][index] = {};
+              }
+          }
+          if (typeof ref[name][index] === 'undefined') {
+            // ref[name][index] = {};
+             if (ix === lastIndex) {
+                 ref[name][index] = value;
+             }
+             else {
+                 ref[name][index] = {};
+             }
+          }
+         }
         ref = ref[name][index];
       }
     });

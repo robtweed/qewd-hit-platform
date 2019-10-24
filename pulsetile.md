@@ -25,7 +25,7 @@ eg using *ufw*
         sudo ufw allow 8081
         sudo ufw allow 8000
 
-Check usingL:
+Check using:
 
         sudo ufw status
 

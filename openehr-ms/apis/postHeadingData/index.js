@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 September 2019
+  12 September 2019
 
   POST /openehr/heading/:heading/:patientId
 
@@ -42,14 +42,14 @@ var flatten = require('../../utils/flatten');
 module.exports = function(args, finished) {
 
   var patientId = args.patientId;
-  if (!isNumeric(patientId)) {
-    return finished({error: 'Invalid patient Id'});
-  }
+  //if (!isNumeric(patientId)) {
+  //  return finished({error: 'Invalid patient Id'});
+  //}
 
   // Only IDCR users can access other NHS Numbers. Get the user's role and 
   // NHS Number from the decoded JWT (args.session)
 
-  if (args.session.openid.role === 'phr') {
+  if (args.session.openid.role.toLowerCase() === 'phr') {
     if (args.session.openid.userId !== patientId) {
       return finished({error: 'You only have access to your own information'});
     }

@@ -24,17 +24,17 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 April 2019
+  1 November 2019
 
   Example custom extraction/normalisation of fields from idToken to JWT
 
 */
 
 module.exports = function(idToken, jwt) {
-
   jwt.role = idToken.role;
   jwt.firstName = idToken.given_name;
   jwt.lastName = idToken.family_name;
+  jwt.nhsNumber = idToken.userId;
 
   return {ok: true};
 };

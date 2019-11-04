@@ -48,5 +48,15 @@
       }
     }
   },
-  "jwt_secret": "=> createUuid()"
+  "openehr": {
+    "host": "192.168.1.100",
+    "port": 8000
+  },
+  "jwt_secret": "=> createUuid()",
+  "volume_path": "~/qewd-hit-platform",
+  "docker_network": {
+    "qewd": "qewd-hit",
+    "ethercis": "ecis-net"
+  },
+  "owner": "ripple"
 }

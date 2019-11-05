@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  4 November 2019
+  5 November 2019
 
 */
 
@@ -116,14 +116,23 @@ module.exports = function() {
     "#",
     "#     source startup.sh",  
     "#",
+    "echo 'Starting Orchestrator'",
     "docker run -d --name orchestrator --rm --network {{docker_network.qewd}} -p {{orchestrator.port}}:8080 -v {{volume_path}}/main:/opt/qewd/mapped rtweed/qewd-server",
+    "echo 'Starting OIDC Provider'",
     "docker run -d --name oidc_provider --rm -p {{oidc_provider.port}}:8080 -v {{volume_path}}/oidc-provider:/opt/qewd/mapped rtweed/qewd-server",
+    "echo 'Starting OIDC Client'",
     "docker run -d --name oidc_client --rm --network {{docker_network.qewd}} -v {{volume_path}}/oidc-client:/opt/qewd/mapped -e mode=\"microservice\" rtweed/qewd-server",
+    "echo 'Starting FHIR MPI Service'",
     "docker run -d --name mpi_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/fhir-mpi:/opt/qewd/mapped -e mode=\"microservice\" rtweed/qewd-server",
+    "echo 'Starting openEHR Service'",
     "docker run -d --name openehr_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/openehr-ms:/opt/qewd/mapped -e mode=\"microservice\" rtweed/qewd-server",
+    "echo 'Starting Audit Service'",
     "docker run -d --name audit_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/audit-ms:/opt/qewd/mapped -e mode=\"microservice\" rtweed/qewd-server",
+    "echo 'Starting EtherCIS Database'",
     "docker run -d --rm --name ethercis-db --net {{docker_network.ethercis}} -p 5432:5432 rtweed/ethercis-db",
-    "docker run -d --rm --name ethercis-server --net {{docker_network.ethercis}} -e DB_IP=ethercis-db -e DB_PORT=5432 -e DB_USER=postgres -e DB_PW=postgres -p {{openehr.port}}:8080 rtweed/ethercis-server"
+    "echo 'Starting EtherCIS Server'",
+    "docker run -d --rm --name ethercis-server --net {{docker_network.ethercis}} -e DB_IP=ethercis-db -e DB_PORT=5432 -e DB_USER=postgres -e DB_PW=postgres -p {{openehr.port}}:8080 rtweed/ethercis-server",
+    "echo 'All Containers have been started'"
   ];
 
   var stop_containers = [
@@ -138,6 +147,7 @@ module.exports = function() {
     "#",
     "#     source shutdown.sh",
     "#",
+    "echo 'Stopping all QEWD HIT Platform Containers'",
     "docker stop orchestrator",
     "docker stop oidc_provider",
     "docker stop oidc_client",
@@ -145,8 +155,63 @@ module.exports = function() {
     "docker stop openehr_service",
     "docker stop audit_service",
     "docker stop ethercis-db",
-    "docker stop ethercis-server"
+    "docker stop ethercis-server",
+    "echo 'All Containers have been stopped'",
   ];
+
+  var rewrite_rules = {
+    "exact": {
+      "/": {
+        "GET": "/pulsetile/index.html"
+      },
+      "/index.html": {
+        "GET": "/pulsetile/index.html"
+      },
+      "/api/initialise": {
+        "GET": "/auth/redirect?client_id=pulsetile&scope=openid profile email"
+      },
+      "/api/logout": {
+        "GET": "/auth/logout?client_id=pulsetile"
+      }
+    },
+    "startswith": {
+      "/static/": "/pulsetile/static/",
+      "/fontawesome/": "/pulsetile/fontawesome/",
+      "/fonts/": "/pulsetile/fonts/",
+      "/images/": "/pulsetile/images/",
+      "/mpi/Patient?": "/mpi/Patients?",
+      "/mpi/Patient/": "/mpi/idcr/Patient/",
+      "/mpi/Patient/search/searchByCity": "/mpi/Patients"
+    },
+    "routes": {
+      "/api/patients/:patientId/synopsis/:heading": {
+        "GET": "/openehr/heading/:heading/:patientId?format=pulsetile_synopsis"
+      },
+      "/api/patients/:patientId/:heading": {
+        "GET": "/openehr/heading/:heading/:patientId?format=pulsetile_summary",
+        "POST": "/openehr/heading/:heading/:patientId?format=pulsetile"
+      },
+      "/api/patients/:patientId/:heading/:sourceId": {
+        "GET": "/openehr/heading/:heading/:patientId?format=pulsetile_detail&uid=:sourceId",
+        "PUT": "/openehr/composition/:sourceId?format=pulsetile"
+      }
+    }
+  };
+
+  this.shell('apt-get update');
+  this.shell('apt-get install -y subversion');
+
+  var ips = [];
+  if (process.env.DOCKER_HOST) {
+    ips = process.env.DOCKER_HOST.split('\n');
+  }
+  var arr = [];
+  ips.forEach(function(ip) {
+    if (ip !== '127.0.0.1' && !ip.startsWith('172.')) {
+      arr.push(ip);
+    }
+  });
+  ips = arr;
 
   console.log('*************** QEWD HIT Platform Installer ***************');
   console.log(' ');
@@ -165,13 +230,21 @@ module.exports = function() {
   console.log('You first need to specify the IP address or domain name of this');
   console.log('server, on which you\'ll be running the QEWD HIT Platform components');
   console.log('This IP address or domain name MUST be externally accessible');
+  var ipAddress;
+  var defaultObj = {};
+  if (ips.length > 0) {
+    ipAddress = ips[0];
+    defaultObj = {defaultInput: ipAddress};
+    defaultIp = '(' + ipAddress + ')';
+    console.log(' ');
+    console.log('The IP address you should use may be in this list: ' + ips);
+  }
 
   var ok = false;
-  var ipAddress;
   var proceed;
   do {
     console.log(' ');
-    ipAddress = ask.question('Server IP addresss or domain name: ', {});
+    ipAddress = ask.question('Server IP addresss or domain name ' + defaultIp + ': ', defaultObj);
     if (ipAddress !== '' && ipAddress !== 'localhost' && ipAddress !== '127.0.0.1') {
       console.log(' ');
       console.log('*** QEWD HIT Platform is to be configured using ' + ipAddress);
@@ -351,6 +424,32 @@ module.exports = function() {
   if (port !== '') {
     openehr.host = openehr.host + ':' + port;
   }
+
+
+  // add additional template mappings
+
+  var headings = {
+    contacts: {
+      templateId: "IDCR - Relevant contacts.v0"
+    },
+    problems: {
+      templateId: "IDCR - Problem List.v1"
+    },
+    vaccinations: {
+      templateId: "IDCR - Immunisation summary.v0"
+    },
+    events: {
+      templateId: "IDCR - Service tracker.v0"
+    },
+    vitalsigns: {
+      templateId: "IDCR - Vital Signs Encounter.v1"
+    }
+  };
+
+  for (var heading in headings) {
+    openehr.headings[heading] = headings[heading];
+  }
+
   createJSONFile(openehr, openehr_path);
 
   console.log('Successfully configured the openehr_service MicroService');
@@ -566,8 +665,9 @@ module.exports = function() {
   console.log('This installer can then automatically create the correct')
   console.log('"docker run" commands for you in the startup file');
   console.log(' ');
+
+  var volume_path = process.env.HOST_VOLUME || settings.volume_path;
   ok = false;
-  var volume_path = settings.volume_path;
   do {
     console.log(' ');
     volume_path = ask.question('QEWD HIT Platform folder (' + volume_path + '): ', {defaultInput: volume_path});
@@ -597,6 +697,24 @@ module.exports = function() {
 
   filePath = '/node/shutdown.sh';
   createFile(stop_containers, filePath);
+
+
+  // Load PulseTile
+
+  var pulsetile_path = '/node/main/orchestrator/www/pulsetile';
+  fs.removeSync(pulsetile_path); // in case a previous copy is there
+  this.shell('svn export https://github.com/PulseTile/PulseTile-RA-Lerna/trunk/projects/showcase-light/build ' + pulsetile_path);
+
+  // Load additional templates
+
+  var templates_path = '/node/openehr-ms/templates';
+  fs.removeSync(templates_path);
+  this.shell('svn export https://github.com/QEWD-Courier/Qewd-HIT-json-transforms/branches/develop/clinical-headings-templates ' + templates_path);
+
+  // save PulseTile URL rewrite rules file to Orchestrator
+
+  filePath = '/node/main/orchestrator/rewrite.json';
+  createJSONFile(rewrite_rules, filePath);
 
   console.log(' ');
   console.log('*** Installation and Configuration was successful');

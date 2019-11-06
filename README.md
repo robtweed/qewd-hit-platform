@@ -57,7 +57,7 @@ If you'd like to try out the QEWD HIt Platform, and also experience its use with
 Dockerised openEHR System ([EtherCIS](http://ethercis.org/)), follow these quick and simple
 steps:
 
-1) You'll need to Linux server or Virtual Machine
+1) You'll need a Linux server or Virtual Machine
 
 2) [Install Docker](https://github.com/robtweed/qewd-hit-platform/blob/master/docs/running.md#install-docker)
  (if you don't already have it installed)

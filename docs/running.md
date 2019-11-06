@@ -11,9 +11,9 @@ Twitter: @rtweed
 ## Install Docker
 
 The QEWD HIT Platform uses Docker Containers for all its moving parts, so, if your
-server does not already have Docker installed, you'll need to install it.
+server or Raspberry Pi does not already have Docker installed, you'll need to install it.
 
-To install Docker on most Linux platforms, you can do this:
+To install Docker on most Linux platforms or a Raspberry Pi, you can do this:
 
 
         curl -sSL https://get.docker.com | sh
@@ -25,7 +25,7 @@ make sure the user does not need to use *sudo* when running *docker* commands:
         sudo usermod -aG docker ${USER}
         su - ${USER}
 
-  NB: You'll be asked to enter your Linux password
+  NB: You'll be asked to enter your user's password
 
 
 The QEWD HIT Platform has no other dependencies.
@@ -76,6 +76,9 @@ For example, on Digital Ocean Droplets, you'll need to do the following:
         ufw allow 8000
         ufw allow 8080
         ufw allow 8081
+
+Note: on a Raspberry Pi you normally won't need to do anything to enable these ports for
+external access within your local network.
 
 3) Fire up all the Docker Containers using:
 

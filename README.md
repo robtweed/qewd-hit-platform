@@ -10,6 +10,9 @@ Twitter: @rtweed
 The QEWD HIT Platform is a set of modular QEWD Containers that interoperate as a demonstrator 
 for Healthcare IT integration, and which provide the basic building blocks for an operational system.
 
+The Platform's Containers will run on any Linux server or virtual machine, and also on
+a Raspberry Pi (Models 3 or 4).
+
 The HIT Platform is based around some important standard building blocks:
 
 - OpenID Connect (OIDC) for user authentication (*cf* NHS Login)
@@ -57,12 +60,12 @@ If you'd like to try out the QEWD HIt Platform, and also experience its use with
 Dockerised openEHR System ([EtherCIS](http://ethercis.org/)), follow these quick and simple
 steps:
 
-1) You'll need a Linux server or Virtual Machine
+1) You'll need a Linux server or Virtual Machine, or a Raspberry Pi (Model 3 or 4).
 
 2) [Install Docker](https://github.com/robtweed/qewd-hit-platform/blob/master/docs/running.md#install-docker)
  (if you don't already have it installed)
 
-3) Make sure you are using a Linux non-root user with *sudu* privileges, 
+3) Make sure you are using a non-root user with *sudu* privileges, 
 and ensure the user can invoke *docker* commands without needing to
 use *sudo* (for the latter, see the instructions in the link for step 2 above)
 
@@ -82,6 +85,8 @@ For example, on Digital Ocean Droplets, you'll need to do the following:
         ufw allow 8000
         ufw allow 8080
         ufw allow 8081
+
+Note: you shouldn't need to do anything on a Raspberry Pi to enable these ports.
 
 6) Fire up all the Docker Containers using:
 

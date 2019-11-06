@@ -106,7 +106,7 @@ the quick install process in action.
 
 ### Customising the Quick Install Process
 
-Advanced users can customised the quick-install script to
+Advanced users can customise the quick-install script to
 run additional steps of their choosing.  These custom steps will
 be invoked at the end of the standard quick-install script, just before
 it would normally terminate.
@@ -126,6 +126,10 @@ a number of useful functions and facilities.  See
 [here](https://github.com/robtweed/node-runner#what-is-the-this-context-within-my-script)
 for details.
 
+You are also provided access to *this.settings* which is the object containing
+the configuration settings created by the user during the main *quick-install* process.
+
+
 Note: if you are not a JavaScript developer and would prefer to use a *bash* script or shell
 command, you can use:
 
@@ -139,6 +143,9 @@ you must refer to any files using its mapped path which is */node*.  For example
 
 
 ### Next Steps
+
+Now that you have a Single Server installation of the QEWD HIT Platform up and running,
+you can read all about the available applications via the links below:
 
 - [The Demo Application](./docs/demo.md)
 - [The OpenEHR Maintenance Application](./docs/openehr-maint.md)

@@ -50,11 +50,75 @@ See the [presentation slides](http://ec2.mgateway.com/QEWD-HIT-Platform.pdf) for
 and rationale behind the QEWD HIT Platform.
 
 
+# Quick Start
+
+If you'd like to try out the QEWD HIt Platform, and also experience its use with the 
+[PulseTile](https://ripple.foundation/pulsetile-2/) User Interface, along with a working,
+Dockerised openEHR System ([EtherCIS](http://ethercis.org/)), follow these quick and simple
+steps:
+
+1) You'll need to Linux server or Virtual Machine
+
+2) [Install Docker](https://github.com/robtweed/qewd-hit-platform/blob/master/docs/running.md#install-docker)
+ (if you don't already have it installed)
+
+3) Make sure you are using a Linux non-root user with *sudu* privileges, 
+and ensure the user can invoke *docker* commands without needing to
+use *sudo* (for the latter, see the instructions in the link for step 2 above)
+
+4) Now, simply run the following commands:
+
+        cd ~
+        git clone https://github.com/robtweed/qewd-hit-platform
+        cd ~/qewd-hit-platform
+        source quick-install.sh
+
+Carefully read the on-screen instructions and answer all the questions.  In most cases, you
+ should be able to accept the default that is offered for each question.
+
+5) When the installer is finished, make sure that ports 8000, 8080 and 8081 are externally-accessible.
+For example, on Digital Ocean Droplets, you'll need to do the following:
+
+        ufw allow 8000
+        ufw allow 8080
+        ufw allow 8081
+
+6) Fire up all the Docker Containers using:
+
+        source startup.sh
+
+The first time you run this, it has to download the various Docker Containers.  Next time(s)
+you run the *startup* command, they will start pretty quickly.
+
+7) You should now have a fully operational system running on your server, and
+all the applications provided with the QEWD HIT Platform should be available for use.
+
+For example, to try out the PulseTile UX/UI, in a browser go to:
+
+        http://xx.xx.xx.xx:8080/pulsetile
+
+        where xx.xx.xx.xx is the IP address or domain name of your Linux server
+
+
+You can watch [this video](https://www.youtube.com/watch?v=nZgSmL2FxMw) which shows 
+the quick install process in action.
+
+
+8) To stop all the Docker Containers:
+
+        cd ~/qewd-hit-platform
+        source shutdown.sh
+
+
+For further details about the QEWD HIT Platform, its moving parts and applications, read the
+rest of the documentation shown and linked below.
+
+
 # OpenEHR
 
 ## The QEWD HIT Platform and OpenEHR
 
-As stated above, the primary aim of the QEWD HIT Platform is to provide a simple, easy-to-understand and
+The primary aim of the QEWD HIT Platform is to provide a simple, easy-to-understand and
 easy-to-use interface to OpenEHR systems, and therefore reduce the otherwise significant
 learning curve for which OpenEHR systems are renowned.
 
@@ -71,14 +135,16 @@ the simplest approach is to use one of the available Dockerised versions of
 of two Docker Containers, one of which provides the REST front-end, whilst the 
 other provides the Postgres Database that EtherCIS uses for data storage.
 
-You can try this one which implements the latest EtherCIS version 1.3. It's best to
-install them in the sequence below.  Detailed installation/configuration 
+These EtherCIS Docker Containers are used for the Quick Install process described
+in the previous section. They implement the latest EtherCIS version 1.3. 
+
+If you're installing manually, then it's best to
+install the EtherCIS Containers in the sequence below.  Detailed installation/configuration 
 instructions are provided in each of the Github repositories:
 
 - [EtherCIS database server](https://github.com/robtweed/ethercis-db-1.3)
 - [EtherCIS front-end server](https://github.com/robtweed/ethercis-server-1.3)
 
-Once these are up and running, you can install and configure the QEWD HIT Platform.
 
 
 ## The QEWD HIT Platform Interface to OpenEHR

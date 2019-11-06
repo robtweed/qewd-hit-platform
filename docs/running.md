@@ -155,6 +155,13 @@ you can read all about the available applications via the links below:
 
 ## Multiple Server Installation
 
+**NOTE**: It is recommended that only advanced users of the QEWD HIT Platform attempt to set up
+a multiple server installation, and that you should first familiarise yourself with the
+platform's moving parts and configuration mechanics using the single server setup described
+above.
+
+If you are an advanced user and want to set up a multiple server installation, proceed as follows.
+
 The first step is to install and configure the Orchestrator server, which is the externally-facing
 QEWD MicroService of the HIT Platform.
 

@@ -155,6 +155,10 @@ you can read all about the available applications via the links below:
 
 ## Multiple Server Installation
 
-[Start here.](https://github.com/robtweed/qewd-hit-platform/blob/master/docs/installation/orchestrator.md)
+The first step is to install and configure the Orchestrator server, which is the externally-facing
+QEWD MicroService of the HIT Platform.
+
+[Start here](https://github.com/robtweed/qewd-hit-platform/blob/master/docs/installation/orchestrator.md)
+ for instructions on installing the Orchestrator.
 
 

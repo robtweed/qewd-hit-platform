@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  5 November 2019
+  6 November 2019
 
 */
 
@@ -40,6 +40,17 @@ module.exports = function() {
 
   var createJSONFile = fs.createJSONFile;
   var createFile = fs.createFile;
+
+  var customScript;
+  try {
+    customScript = require('/node/custom-install');
+    console.log('Custom script loaded');
+  }
+  catch(err) {
+    console.log('No custom script or unable to load it');
+  }
+
+  // -----------------------------------------------
 
   var helpers = {
     createUuid: function() {
@@ -197,6 +208,27 @@ module.exports = function() {
       }
     }
   };
+
+  var headings = {
+    contacts: {
+      templateId: "IDCR - Relevant contacts.v0"
+    },
+    problems: {
+      templateId: "IDCR - Problem List.v1"
+    },
+    vaccinations: {
+      templateId: "IDCR - Immunisation summary.v0"
+    },
+    events: {
+      templateId: "IDCR - Service tracker.v0"
+    },
+    vitalsigns: {
+      templateId: "IDCR - Vital Signs Encounter.v1"
+    }
+  };
+
+  // -------------------------------------------------
+
 
   this.shell('apt-get update');
   this.shell('apt-get install -y subversion');
@@ -428,24 +460,6 @@ module.exports = function() {
 
   // add additional template mappings
 
-  var headings = {
-    contacts: {
-      templateId: "IDCR - Relevant contacts.v0"
-    },
-    problems: {
-      templateId: "IDCR - Problem List.v1"
-    },
-    vaccinations: {
-      templateId: "IDCR - Immunisation summary.v0"
-    },
-    events: {
-      templateId: "IDCR - Service tracker.v0"
-    },
-    vitalsigns: {
-      templateId: "IDCR - Vital Signs Encounter.v1"
-    }
-  };
-
   for (var heading in headings) {
     openehr.headings[heading] = headings[heading];
   }
@@ -601,6 +615,9 @@ module.exports = function() {
   console.log(' ');
   console.log('  which would create a Docker network named "qewd-hit"');
   console.log(' ');
+  console.log('Note that this installer has already created one named "qewd-hit"');
+  console.log('for you, so you can safely accept the default value');
+  console.log(' ');
 
   ok = false;
   var network_name = settings.docker_network.qewd;
@@ -634,6 +651,9 @@ module.exports = function() {
   console.log('      docker network create ecis-net');
   console.log(' ');
   console.log('  which would create a Docker network named "ecis-net"');
+  console.log(' ');
+  console.log('Note that this installer has already created one named "ecis-net"');
+  console.log('for you, so you can safely accept the default value');
   console.log(' ');
   ok = false;
   network_name = settings.docker_network.ethercis;
@@ -689,7 +709,7 @@ module.exports = function() {
 
   console.log(' ');
   console.log('Now creating a startup file for you to use to start all the');
-  console.log('Containers on your server');
+  console.log('Containers on your server, using your configuration settings.');
 
   var content = transform(start_containers, settings, helpers);
   var filePath = '/node/startup.sh';
@@ -698,6 +718,10 @@ module.exports = function() {
   filePath = '/node/shutdown.sh';
   createFile(stop_containers, filePath);
 
+  console.log(' ');
+  console.log('Now loading and configuring the PulseTile UI for use with');
+  console.log('the QEWD HIT Platform');
+  console.log(' ');
 
   // Load PulseTile
 
@@ -716,10 +740,28 @@ module.exports = function() {
   filePath = '/node/main/orchestrator/rewrite.json';
   createJSONFile(rewrite_rules, filePath);
 
+  // If a custom installation file has been added, run it now
+
+  var ctx = this;
+  ctx.settings = settings;
+  if (customScript) {
+    console.log('Now running your custom install script...');
+
+    customScript.call(ctx);
+
+    console.log(' ');
+    console.log('Custom script completed');
+    console.log(' ');
+  }
+
   console.log(' ');
   console.log('*** Installation and Configuration was successful');
   console.log(' ');
-  console.log('You can now start up the QEWD MicroService Containers');
+  console.log('You can now start up the QEWD MicroService Containers by running the command:');
+  console.log('source startup.sh');
+  console.log(' ');
+  console.log('You can shut them down using the command:');
+  console.log('source shutdown.sh');
 
   return;
 

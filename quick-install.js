@@ -128,21 +128,21 @@ module.exports = function() {
     "#     source startup.sh",  
     "#",
     "echo 'Starting Orchestrator'",
-    "docker run -d --name orchestrator --rm --network {{docker_network.qewd}} -p {{orchestrator.port}}:8080 -v {{volume_path}}/main:/opt/qewd/mapped rtweed/qewd-server",
+    "docker run -d --name orchestrator --rm --network {{docker_network.qewd}} -p {{orchestrator.port}}:8080 -v {{volume_path}}/main:/opt/qewd/mapped {{containers.qewd}}",
     "echo 'Starting OIDC Provider'",
-    "docker run -d --name oidc_provider --rm -p {{oidc_provider.port}}:8080 -v {{volume_path}}/oidc-provider:/opt/qewd/mapped rtweed/qewd-server",
+    "docker run -d --name oidc_provider --rm -p {{oidc_provider.port}}:8080 -v {{volume_path}}/oidc-provider:/opt/qewd/mapped {{containers.qewd}}",
     "echo 'Starting OIDC Client'",
-    "docker run -d --name oidc_client --rm --network {{docker_network.qewd}} -v {{volume_path}}/oidc-client:/opt/qewd/mapped -e mode=\"microservice\" rtweed/qewd-server",
+    "docker run -d --name oidc_client --rm --network {{docker_network.qewd}} -v {{volume_path}}/oidc-client:/opt/qewd/mapped -e mode=\"microservice\" {{containers.qewd}}",
     "echo 'Starting FHIR MPI Service'",
-    "docker run -d --name mpi_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/fhir-mpi:/opt/qewd/mapped -e mode=\"microservice\" rtweed/qewd-server",
+    "docker run -d --name mpi_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/fhir-mpi:/opt/qewd/mapped -e mode=\"microservice\" {{containers.qewd}}",
     "echo 'Starting openEHR Service'",
-    "docker run -d --name openehr_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/openehr-ms:/opt/qewd/mapped -e mode=\"microservice\" rtweed/qewd-server",
+    "docker run -d --name openehr_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/openehr-ms:/opt/qewd/mapped -e mode=\"microservice\" {{containers.qewd}}",
     "echo 'Starting Audit Service'",
-    "docker run -d --name audit_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/audit-ms:/opt/qewd/mapped -e mode=\"microservice\" rtweed/qewd-server",
+    "docker run -d --name audit_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/audit-ms:/opt/qewd/mapped -e mode=\"microservice\" {{containers.qewd}}",
     "echo 'Starting EtherCIS Database'",
-    "docker run -d --rm --name ethercis-db --net {{docker_network.ethercis}} -p 5432:5432 rtweed/ethercis-db",
+    "docker run -d --rm --name ethercis-db --net {{docker_network.ethercis}} -p 5432:5432 {{containers.ethercis_db}}",
     "echo 'Starting EtherCIS Server'",
-    "docker run -d --rm --name ethercis-server --net {{docker_network.ethercis}} -e DB_IP=ethercis-db -e DB_PORT=5432 -e DB_USER=postgres -e DB_PW=postgres -p {{openehr.port}}:8080 rtweed/ethercis-server",
+    "docker run -d --rm --name ethercis-server --net {{docker_network.ethercis}} -e DB_IP=ethercis-db -e DB_PORT=5432 -e DB_USER=postgres -e DB_PW=postgres -p {{openehr.port}}:8080 {{containers.ethercis_server}}",
     "echo 'All Containers have been started'"
   ];
 
@@ -710,6 +710,16 @@ module.exports = function() {
   console.log(' ');
   console.log('Now creating a startup file for you to use to start all the');
   console.log('Containers on your server, using your configuration settings.');
+
+  var suffix = '';
+  if (process.env.PLATFORM === 'arm') {
+    suffix = '-rpi';
+  }
+  settings.containers = {
+    qewd: 'rtweed/qewd-server' + suffix,
+    ethercis_db: 'rtweed/ethercis-db' + suffix,
+    ethercis_server: 'rtweed/ethercis-server' + suffix
+  };
 
   var content = transform(start_containers, settings, helpers);
   var filePath = '/node/startup.sh';

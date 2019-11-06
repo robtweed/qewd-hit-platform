@@ -5,6 +5,7 @@
 # This starts the Node-Runner Container with the correct environment settings and parameters
 
 VOLUME=${1-$PWD}
+PLATFORM=$(uname -m)
 
 echo 'Running Node-Runner Container with volume '$VOLUME
 
@@ -17,5 +18,19 @@ echo 'If so, please wait for it to load'
 docker network ls|grep qewd-hit > /dev/null || docker network create qewd-hit
 docker network ls|grep ecis-net > /dev/null || docker network create ecis-net
 
-docker run -it --name installer --rm -v $VOLUME:/node -e "node_script=quick-install" -e "DOCKER_HOST=$(ip -4 addr | grep -Po 'inet \K[\d.]+')" -e "HOST_VOLUME=$VOLUME" rtweed/node-runner
+#echo $PLATFORM
+
+
+if [[ "$PLATFORM" != "armv"* ]]
+
+then
+  echo "running node-runner for Linux"
+  docker run -it --name installer --rm -v $VOLUME:/node -e "node_script=quick-install" -e "PLATFORM=linux" -e "DOCKER_HOST=$(ip -4 addr | grep -Po 'inet \K[\d.]+')" -e "HOST_VOLUME=$VOLUME" rtweed/node-runner
+
+else
+  echo "running node-runner for Raspberry Pi" 
+  docker run -it --name installer --rm -v $VOLUME:/node -e "node_script=quick-install" -e "PLATFORM=arm" -e "DOCKER_HOST=$(ip -4 addr | grep -Po 'inet \K[\d.]+')" -e "HOST_VOLUME=$VOLUME" rtweed/node-runner-rpi
+
+fi
+
 

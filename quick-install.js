@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  11 November 2019
+  12 November 2019
 
 */
 
@@ -844,6 +844,11 @@ module.exports = function() {
   createFile(content, filePath);
 
   filePath = '/node/shutdown.sh';
+  stop_containers.forEach(function(line, index) {
+    if (line.includes('node-runner')) {
+      stop_containers[index] = line + suffix;
+    }
+  });
   createFile(stop_containers, filePath);
 
   console.log(' ');

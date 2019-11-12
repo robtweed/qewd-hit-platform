@@ -41,8 +41,8 @@ else
   echo "Making sure you have the latest QEWD Container..."
   docker pull rtweed/qewd-server-rpi
   docker pull rtweed/node-runner-rpi
-  docker pull rtweed/ethercis-db
-  docker pull rtweed/ethercis-server
+  docker pull rtweed/ethercis-db-rpi
+  docker pull rtweed/ethercis-server-rpi
   echo "running node-runner for Raspberry Pi"
 
   docker run -it --name installer --rm -v $VOLUME:/node -e "node_script=quick-install" -e "PLATFORM=arm" -e "DOCKER_HOST=$(ip -4 addr | grep -Po 'inet \K[\d.]+')" -e "HOST_VOLUME=$VOLUME" rtweed/node-runner-rpi

@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  6 November 2019
+  11 November 2019
 
 */
 
@@ -118,31 +118,28 @@ module.exports = function() {
   var start_containers = [
     "#!/usr/bin/env bash",
     "# This script will correctly start all the containers that constitute the QEWD HIT Platform",
+    "#", 
     "#",
-    "#  You will need to change ownership of this file from root, eg:",
-    "#",
-    "#     sudo chown ripple:ripple startup.sh",  
-    "#",
-    "#  Then run this startup script from the QEWD HIT Platform folder using:",
+    "#  Run this startup script from the QEWD HIT Platform folder using:",
     "#",
     "#     source startup.sh",  
     "#",
     "echo 'Starting Orchestrator'",
-    "docker run -d --name orchestrator --rm --network {{docker_network.qewd}} -p {{orchestrator.port}}:8080 -v {{volume_path}}/main:/opt/qewd/mapped {{containers.qewd}}",
+    "docker run -d --name orchestrator --rm --network {{docker_network.qewd}} -p {{orchestrator.port}}:8080 -v {{volume_path}}/main:/opt/qewd/mapped {{ydb_persistence.orchestrator}} {{containers.qewd}}",
     "echo 'Starting OIDC Provider'",
-    "docker run -d --name oidc_provider --rm -p {{oidc_provider.port}}:8080 -v {{volume_path}}/oidc-provider:/opt/qewd/mapped {{containers.qewd}}",
+    "docker run -d --name oidc_provider --rm -p {{oidc_provider.port}}:8080 -v {{volume_path}}/oidc-provider:/opt/qewd/mapped {{ydb_persistence.oidc_provider}} {{containers.qewd}}",
     "echo 'Starting OIDC Client'",
-    "docker run -d --name oidc_client --rm --network {{docker_network.qewd}} -v {{volume_path}}/oidc-client:/opt/qewd/mapped -e mode=\"microservice\" {{containers.qewd}}",
+    "docker run -d --name oidc_client --rm --network {{docker_network.qewd}} -v {{volume_path}}/oidc-client:/opt/qewd/mapped -e mode=\"microservice\" {{ydb_persistence.oidc_client}} {{containers.qewd}}",
     "echo 'Starting FHIR MPI Service'",
-    "docker run -d --name mpi_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/fhir-mpi:/opt/qewd/mapped -e mode=\"microservice\" {{containers.qewd}}",
+    "docker run -d --name mpi_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/fhir-mpi:/opt/qewd/mapped -e mode=\"microservice\" {{ydb_persistence.mpi}} {{containers.qewd}}",
     "echo 'Starting openEHR Service'",
-    "docker run -d --name openehr_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/openehr-ms:/opt/qewd/mapped -e mode=\"microservice\" {{containers.qewd}}",
+    "docker run -d --name openehr_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/openehr-ms:/opt/qewd/mapped -e mode=\"microservice\" {{ydb_persistence.openehr}} {{containers.qewd}}",
     "echo 'Starting Audit Service'",
-    "docker run -d --name audit_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/audit-ms:/opt/qewd/mapped -e mode=\"microservice\" {{containers.qewd}}",
+    "docker run -d --name audit_service --rm --network {{docker_network.qewd}} -v {{volume_path}}/audit-ms:/opt/qewd/mapped -e mode=\"microservice\" {{ydb_persistence.audit}} {{containers.qewd}}",
     "echo 'Starting EtherCIS Database'",
-    "docker run -d --rm --name ethercis-db --net {{docker_network.ethercis}} -p 5432:5432 {{containers.ethercis_db}}",
+    "docker run -d --rm --name ethercis-db --net {{docker_network.ethercis}} -p 5432:5432 {{ydb_persistence.ethercis_db}} {{containers.ethercis_db}}",
     "echo 'Starting EtherCIS Server'",
-    "docker run -d --rm --name ethercis-server --net {{docker_network.ethercis}} -e DB_IP=ethercis-db -e DB_PORT=5432 -e DB_USER=postgres -e DB_PW=postgres -p {{openehr.port}}:8080 {{containers.ethercis_server}}",
+    "docker run -d --rm --name ethercis-server --net {{docker_network.ethercis}} -e DB_IP=ethercis-db -e DB_PORT=5432 -e DB_USER=postgres -e DB_PW=postgres -p {{openehr.port}}:8080 {{ydb_persistence.ethercis_server}} {{containers.ethercis_server}}",
     "echo 'All Containers have been started'"
   ];
 
@@ -150,21 +147,19 @@ module.exports = function() {
     "#!/usr/bin/env bash",
     "# This script will stop ALL the containers that constitute the QEWD HIT Platform",
     "#",
-    "#  You will need to change ownership of this file from root, eg:",
     "#",
-    "#     sudo chown ripple:ripple shutdown.sh",
-    "#",
-    "#  The run this script from the QEWD HIT Platform folder using:",
+    "#  Run this script from the QEWD HIT Platform folder using:",
     "#",
     "#     source shutdown.sh",
     "#",
     "echo 'Stopping all QEWD HIT Platform Containers'",
-    "docker stop orchestrator",
-    "docker stop oidc_provider",
-    "docker stop oidc_client",
-    "docker stop mpi_service",
-    "docker stop openehr_service",
-    "docker stop audit_service",
+    "#",
+    "#  Send authenticated requests to cleanly shut down QEWD Containers",
+    "#",
+    "docker run -it --name qhp_shutdown --rm -v $PWD:/node -e \"node_script=shutdown\" rtweed/node-runner",
+    "#",
+    "echo 'Stopping EtherCIS Containers'",
+    "#",
     "docker stop ethercis-db",
     "docker stop ethercis-server",
     "echo 'All Containers have been stopped'",
@@ -579,8 +574,34 @@ module.exports = function() {
   if (!ok) return;
   console.log('Successfully configured the audit-ms MicroService');
 
+
+  // Loading Modules from NPM
+
+
   console.log(' ');
-  console.log('Now installing microservice dependencies from NPM...');
+  console.log('Now installing microservice dependencies from NPM');
+
+  console.log(' ');
+  console.log('This is usually a one-time load of the Node.js Modules');
+  console.log('that are required by the QEWD Microservices.');
+  console.log('However, you may want to force a clean reload of them now');
+  console.log(' ');
+  console.log('Note: if this is the first time you are running this installer,');
+  console.log('it does not matter what you answer - all modules will be loaded');
+  console.log(' ');
+  var cleardown = ask.keyInYNStrict('Do you want to clear down all pre-loaded modules?');
+
+  var module_path;
+  if (cleardown) {
+    module_path = '/node/oidc-provider/node_modules';
+    fs.removeSync(module_path);
+    module_path = '/node/oidc-client/node_modules';
+    fs.removeSync(module_path);
+    module_path = '/node/fhir-mpi/node_modules';
+    fs.removeSync(module_path);
+    module_path = '/node/openehr-ms/node_modules';
+    fs.removeSync(module_path);
+  }
 
   var ms_names = fs.getDirectories('/node');
 
@@ -704,6 +725,103 @@ module.exports = function() {
   console.log('The path that will be volume mapped is ' + volume_path);
   settings.volume_path = volume_path;
 
+
+  // Persistent data storage
+
+  // Add the pre-initialised files to the mapped volume 
+  //  but only if they aren't there already.
+  // If they already exist, they may have data in them!
+
+  var yottadb_path = '/node/yottadb';
+  var os = 'linux';
+  if (process.env.PLATFORM === 'arm') {
+    os = 'rpi';
+  }
+  var ydb_path;
+
+  if (!fs.existsSync(yottadb_path)) {
+    fs.ensureDirSync(yottadb_path);
+    ydb_path = yottadb_path + '/main';
+    this.shell('svn export https://github.com/robtweed/yotta-gbldir-files/trunk/r1.28/' + os + '  ' + ydb_path);
+    fs.copySync(ydb_path, yottadb_path + '/openehr-ms');
+    fs.copySync(ydb_path, yottadb_path + '/audit-ms');
+    fs.copySync(ydb_path, yottadb_path + '/fhir-mpi');
+    fs.copySync(ydb_path, yottadb_path + '/oidc-client');
+    fs.copySync(ydb_path, yottadb_path + '/oidc-provider');
+  }
+
+  // copy over pre-initialised ethercis-db postgres database files
+
+  var ethercis_db_path = '/node/ethercis-db';
+  var tar_file = 'pgdata.tar.gz';
+  var repo_path = 'https://github.com/robtweed/ethercis-db-1.3/trunk/' + tar_file;
+  if (os === 'rpi') {
+    repo_path = 'https://github.com/robtweed/ethercis-db-rpi/trunk/' + tar_file;
+  }
+
+  if (!fs.existsSync(ethercis_db_path + '/pgdata')) {
+    fs.ensureDirSync(ethercis_db_path);
+    this.shell('svn export ' + repo_path + '  ' + ethercis_db_path);
+    this.shell('tar -xvf ' + ethercis_db_path + '/' + tar_file + ' -C ' + ethercis_db_path );
+  }
+
+  // copy over pre-initialised ethercis-server config folder
+
+  var ethercis_server_path = '/node/ethercis-server';
+  var repo_path = 'https://github.com/robtweed/ethercis-server-1.3/trunk/config';
+  if (os === 'rpi') {
+    repo_path = 'https://github.com/robtweed/ethercis-server-rpi/trunk/config';
+  }
+
+  if (!fs.existsSync(ethercis_server_path + '/config')) {
+    fs.ensureDirSync(ethercis_server_path);
+    this.shell('svn export ' + repo_path + '  ' + ethercis_server_path + '/config');
+  }
+
+  console.log(' ');
+  console.log('The QEWD and EtherCIS Containers can optionally persist their data.');
+  console.log('If selected, the QEWD Containers will persist their data');
+  console.log('into the ' + volume_path + '/yottadb folder on your host system');
+  console.log('The EtherCIS Containers will persist to the /ethercis-db and /ethercis-server');
+  console.log('folders on your host system');
+  console.log(' ');
+  var persistence = ask.keyInYNStrict('Do you want to all Containers to persist their data?');
+
+
+  if (persistence) {
+    var prefix = '-v ' + volume_path + '/yottadb/';
+    var suffix = ':/root/.yottadb/r1.28_';
+    if (os === 'linux') {
+      suffix = suffix + 'x86_64/g';
+    }
+    else {
+      suffix = suffix + 'armv7l/g';
+    }
+    settings.ydb_persistence = {
+      orchestrator: '',
+      openehr: prefix + 'openehr-ms' + suffix,
+      audit: prefix + 'audit-ms' + suffix,
+      mpi: prefix + 'fhir-mpi' + suffix,
+      oidc_client: '',
+      oidc_provider: prefix + 'oidc-provider' + suffix,
+      ethercis_db: '-v ' + volume_path + '/ethercis-db/pgdata:/var/lib/postgresql/pgdata',
+      ethercis_server: '-v ' + volume_path + '/ethercis-server/config:/config'
+    };
+    console.log('All QEWD Containers will persist their YottaDB data');
+  }
+  else {
+    settings.ydb_persistence = {
+      orchestrator: '',
+      openehr: '',
+      audit: '',
+      mpi: '',
+      oidc_client: '',
+      oidc_provider: '',
+      ethercis_db: '',
+      ethercis_server: ''
+    };
+    console.log('The QEWD Containers will NOT persist their YottaDB data');
+  }
 
   // Create startup file for containers
 

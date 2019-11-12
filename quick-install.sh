@@ -24,13 +24,27 @@ docker network ls|grep ecis-net > /dev/null || docker network create ecis-net
 if [[ "$PLATFORM" != "armv"* ]]
 
 then
+
+  echo "Making sure you have the latest versions of the Docker Containers..."
+
+  docker pull rtweed/node-runner
+  docker pull rtweed/qewd-server
+  docker pull rtweed/ethercis-db
+  docker pull rtweed/ethercis-server
+
   echo "running node-runner for Linux"
+
   docker run -it --name installer --rm -v $VOLUME:/node -e "node_script=quick-install" -e "PLATFORM=linux" -e "DOCKER_HOST=$(ip -4 addr | grep -Po 'inet \K[\d.]+')" -e "HOST_VOLUME=$VOLUME" rtweed/node-runner
 
 else
-  echo "running node-runner for Raspberry Pi" 
+
+  echo "Making sure you have the latest QEWD Container..."
+  docker pull rtweed/qewd-server-rpi
+  docker pull rtweed/node-runner-rpi
+  docker pull rtweed/ethercis-db
+  docker pull rtweed/ethercis-server
+  echo "running node-runner for Raspberry Pi"
+
   docker run -it --name installer --rm -v $VOLUME:/node -e "node_script=quick-install" -e "PLATFORM=arm" -e "DOCKER_HOST=$(ip -4 addr | grep -Po 'inet \K[\d.]+')" -e "HOST_VOLUME=$VOLUME" rtweed/node-runner-rpi
 
 fi
-
-

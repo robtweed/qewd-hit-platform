@@ -1,7 +1,7 @@
 /*
 
  ----------------------------------------------------------------------------
- | oidc-provider: OIDC Provider QEWD-Up MicroService                        |
+ | oidc-client: OIDC Client QEWD-Up MicroService                            |
  |                                                                          |
  | Copyright (c) 2019 M/Gateway Developments Ltd,                           |
  | Redhill, Surrey UK.                                                      |
@@ -24,52 +24,59 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  12 March 2019
+  8 November 2019
 
 */
 
-function sendError(error, res, status) {
-  status = status || 400;
-  res.set('content-length', error);
-  res.status(status).send(error);
-}
+var request = require('request');
+var oidc = require('../../configuration/oidc.json');
 
-module.exports = async function(bodyParser, app, qewdRouter, config) {
-  this.bodyParser = bodyParser;
-  var _this = this;
+module.exports = function(args, finished) {
+  var auth = args.req.headers.authorization;
+  var basicAuth = args.req.headers['x-authorization'];
+  if (!auth) {
+    return finished({error: 'Missing authorization header'});
+  }
+  if (!auth.startsWith('AccessToken ')) {
+    return finished({error: 'Invalid authorization header'});
+  }
+  var access_token = auth.split('AccessToken ')[1];
+  var client_id = 'qewd-monitor-ms';
+  var client_secret = oidc.oidc_provider.clients[client_id].client_secret;
+  var auth = 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64');
+  
+  var options = {
+    url: oidc.oidc_provider.host + '/openid/token/introspection',
+    headers: {
+      Authorization: auth
+    },
+    form: {
+      token: access_token
+    },
+    strictSSL: false
+  };
 
-  app.use(function(req, res, next) {
-    console.log('** incoming url: ' + req.url + ': ' + req.method + ' *****');
-    return next();
-  });
+  request.post(options, function(error, response, body) {
 
-  app.all('/oidc/*', async function(req, res, next) {
-    console.log('!!! intercepted /oidc request');
-    console.log('req.query: ' + JSON.stringify(req.query, null, 2));
-    var jwt = req.headers.authorization;
-    console.log('jwt = ' + jwt);
-    jwt = jwt.split('Bearer ')[1];
-    var client = await _this.oidc.Provider.Client.find('admin');
-    console.log('client = ' + JSON.stringify(client, null, 2));
-    var result;
+    var results;
     try {
-      result = await _this.oidc.Provider.IdToken.validate(jwt, client);
+      results = JSON.parse(body);
     }
     catch(err) {
-      console.log('Error validating IdToken: ' + err);
-      sendError('Invalid IdToken', res);
-      return;
+      results = {};
     }
-    //console.log('result of validate = ' + JSON.stringify(result, null, 2));
-    if (req.query && req.query.ignore_idToken_expiry === 'true') {
-      next();
-      return;
+    //console.log('results = ' + JSON.stringify(results, null, 2));
+    if (results.active === true) {
+      // OK the access token was valid, so we can now send shutdown
+      // messages to all microservices
+      finished({
+        ok: true,
+        authorization: basicAuth,
+        oidc_provider: oidc.oidc_provider.host
+      });
     }
-    var now = parseInt(Date.now()/1000);
-    if (result.payload.exp < now) {
-      sendError('IdToken expired', res);
-      return;
+    else {
+      finished({error: 'Invalid request'});
     }
-    next();
   });
 };

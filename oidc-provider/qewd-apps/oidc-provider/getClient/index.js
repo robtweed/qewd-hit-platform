@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  14 March 2019
+  7 November 2019
 
 */
 
@@ -53,6 +53,7 @@ function getAClient(clientsDoc, client_id) {
   var clientObj = {
     client_id: client.client_id,
     client_secret: client.client_secret,
+    grant_types: client.grant_types,
     redirect_uris: redirect_uris,
     post_logout_redirect_uris: [orchestratorHost + post_logout_uri_path]
   };

@@ -41,6 +41,7 @@
     {
       "client_id": "qewd-monitor-ms",
       "client_secret": "{{oidc_provider.clients['qewd-monitor-ms'].client_secret}}",
+      "grant_types": ["client_credentials", "authorization_code"],
       "post_logout_uri_path": "/qewd-monitor-ms",
       "ui": {
         "login_form_title": "QEWD Monitor Admininstrator Log In",

@@ -136,5 +136,19 @@
     "uri": "/oidc/admin/:type",
     "method": "DELETE",
     "on_microservice": "oidc_client"
+  },
+  {
+    "uri": "/qewd/shutdown_all",
+    "method": "GET",
+    "on_microservice": "oidc_client",
+    "handler": "qewd_shutdown_all"
+  },
+  {
+    "uri": "/qewd/shutdown/:destination",
+    "method": "GET",
+    "from_microservice": "orchestrator",
+    "on_microservices": [
+      "audit_service"
+    ]
   }
 ]

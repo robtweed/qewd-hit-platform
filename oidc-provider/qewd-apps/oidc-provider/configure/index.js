@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  12 April 2019
+  12 November 2019
 
 */
 
@@ -72,32 +72,44 @@ module.exports = function(messageObj, session, send, finished) {
 
 
   var clientsDoc = oidcDoc.$('Clients')
-  if (!clientsDoc.exists && data) {
-    if (data.Clients) {
+  if (clientsDoc.exists) {
+    if (data && data.Clients) {
+      // update HIT client details from data, as user may have
+      // rerun installer.  Client secrets in particular may have changed
       data.Clients.forEach(function(record) {
-        id = clientsDoc.$('next_id').increment();
-        clientsDoc.$(['by_id', id]).setDocument(record);
-      });
+        var ix = clientsDoc.$(['by_client_id', record.client_id]).value;
+        clientsDoc.$(['by_id', ix]).setDocument(record);
+      });      
     }
-    if (data.Users) {
-      var usersDoc = oidcDoc.$('Users');
-      var userClientDoc;
-      var clientObj;
-      for (var client in data.Users) {
-        userClientDoc = usersDoc.$(client);
-        clientObj = data.Users[client];
-        clientObj.forEach(function(record) {
-          id = userClientDoc.$('next_id').increment();
-          password = record.password || 'password';
-          record.password = bcrypt.hashSync(password, salt);
-          record.sub = uuid();
-          record.verified = true;
-          record.createdBy = 1;
-          record.createdAt = now;
-          record.updatedBy = 1;
-          record.updatedAt = now;
-          userClientDoc.$(['by_id', id]).setDocument(record);
+  }
+  else {
+    if (data) {
+      if (data.Clients) {
+        data.Clients.forEach(function(record) {
+          id = clientsDoc.$('next_id').increment();
+          clientsDoc.$(['by_id', id]).setDocument(record);
         });
+      }
+      if (data.Users) {
+        var usersDoc = oidcDoc.$('Users');
+        var userClientDoc;
+        var clientObj;
+        for (var client in data.Users) {
+          userClientDoc = usersDoc.$(client);
+          clientObj = data.Users[client];
+          clientObj.forEach(function(record) {
+            id = userClientDoc.$('next_id').increment();
+            password = record.password || 'password';
+            record.password = bcrypt.hashSync(password, salt);
+            record.sub = uuid();
+            record.verified = true;
+            record.createdBy = 1;
+            record.createdAt = now;
+            record.updatedBy = 1;
+            record.updatedAt = now;
+            userClientDoc.$(['by_id', id]).setDocument(record);
+          });
+        }
       }
     }
   }

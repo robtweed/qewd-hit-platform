@@ -4,5 +4,11 @@
     "method": "POST",
     "handler": "saveToAudit",
     "authenticate": false
+  },
+  {
+    "uri": "/qewd/shutdown/:destination",
+    "method": "GET",
+    "handler": "qewd_shutdown",
+    "authenticate": false
   }
 ]

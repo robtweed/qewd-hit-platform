@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  18 March 2019
+  8 November 2019
 
   This module is invoked for EVERY incoming REST request.
 
@@ -97,6 +97,23 @@ module.exports = function(req, res, next) {
 
     req.sendFireAndForgetMsg(req, params);
 
+  }
+
+  if (req.originalUrl.startsWith('/qewd/shutdown/')) {
+    return sendError('Invalid request');
+  }
+
+  if (req.originalUrl.startsWith('/qewd/')) {
+    // For Access Token-authenticated messages
+    // we need to change the Authorization header because QEWD
+    // expects a Bearer token to be a JWT.  We'll change it to 
+    // a custom type of Access to allow the incoming message to
+    // not get rejected by the Orchestrator
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+      var token = req.headers.authorization.split('Bearer ')[1];
+      req.headers.authorization = 'AccessToken ' + token;
+    }
   }
 
   next();

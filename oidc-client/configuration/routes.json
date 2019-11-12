@@ -30,5 +30,17 @@
     "uri": "/oidc/admin/:type",
     "method": "DELETE",
     "handler": "oidc_admin"
+  },
+  {
+    "uri": "/qewd/shutdown_all",
+    "method": "GET",
+    "handler": "qewd_shutdown_all",
+    "authenticate": false
+  },
+  {
+    "uri": "/qewd/shutdown/:destination",
+    "method": "GET",
+    "handler": "qewd_shutdown",
+    "authenticate": false
   }
 ]

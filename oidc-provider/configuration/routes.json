@@ -28,5 +28,11 @@
     "uri": "/oidc/user/:client_id",
     "method": "PUT",
     "handler": "editUser"
+  },
+  {
+    "uri": "/qewd/shutdown",
+    "method": "GET",
+    "handler": "qewd_shutdown",
+    "authenticate": false
   }
 ]

@@ -54,5 +54,11 @@
     "method": "GET",
     "handler": "ping",
     "authenticate": false
+  },
+  {
+    "uri": "/qewd/shutdown/:destination",
+    "method": "GET",
+    "handler": "qewd_shutdown",
+    "authenticate": false
   }
 ]

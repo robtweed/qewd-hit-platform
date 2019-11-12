@@ -1,7 +1,7 @@
 /*
 
  ----------------------------------------------------------------------------
- | oidc-provider: OIDC Provider QEWD-Up MicroService                        |
+ | QEWD HIT Platform: QEWD Shutdown Handler                                 |
  |                                                                          |
  | Copyright (c) 2019 M/Gateway Developments Ltd,                           |
  | Redhill, Surrey UK.                                                      |
@@ -24,52 +24,10 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  12 March 2019
+  8 November 2019
 
 */
 
-function sendError(error, res, status) {
-  status = status || 400;
-  res.set('content-length', error);
-  res.status(status).send(error);
-}
-
-module.exports = async function(bodyParser, app, qewdRouter, config) {
-  this.bodyParser = bodyParser;
-  var _this = this;
-
-  app.use(function(req, res, next) {
-    console.log('** incoming url: ' + req.url + ': ' + req.method + ' *****');
-    return next();
-  });
-
-  app.all('/oidc/*', async function(req, res, next) {
-    console.log('!!! intercepted /oidc request');
-    console.log('req.query: ' + JSON.stringify(req.query, null, 2));
-    var jwt = req.headers.authorization;
-    console.log('jwt = ' + jwt);
-    jwt = jwt.split('Bearer ')[1];
-    var client = await _this.oidc.Provider.Client.find('admin');
-    console.log('client = ' + JSON.stringify(client, null, 2));
-    var result;
-    try {
-      result = await _this.oidc.Provider.IdToken.validate(jwt, client);
-    }
-    catch(err) {
-      console.log('Error validating IdToken: ' + err);
-      sendError('Invalid IdToken', res);
-      return;
-    }
-    //console.log('result of validate = ' + JSON.stringify(result, null, 2));
-    if (req.query && req.query.ignore_idToken_expiry === 'true') {
-      next();
-      return;
-    }
-    var now = parseInt(Date.now()/1000);
-    if (result.payload.exp < now) {
-      sendError('IdToken expired', res);
-      return;
-    }
-    next();
-  });
+module.exports = function(args, finished) {
+  finished({ok: true});
 };

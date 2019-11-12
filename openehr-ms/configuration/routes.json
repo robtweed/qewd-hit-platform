@@ -43,5 +43,11 @@
     "uri": "/openehr/templates",
     "method": "GET",
     "handler": "getTemplates"
+  },
+  {
+    "uri": "/qewd/shutdown/:destination",
+    "method": "GET",
+    "handler": "qewd_shutdown",
+    "authenticate": false
   }
 ]

@@ -3,7 +3,7 @@
  ----------------------------------------------------------------------------
  | QEWD HIT Platform: Quick Single-Platform Installer                       |
  |                                                                          |
- | Copyright (c) 2019 M/Gateway Developments Ltd,                           |
+ | Copyright (c) 2020 M/Gateway Developments Ltd,                           |
  | Redhill, Surrey UK.                                                      |
  | All rights reserved.                                                     |
  |                                                                          |
@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  12 November 2019
+  18 May 2020
 
 */
 
@@ -229,6 +229,8 @@ module.exports = function() {
   this.shell('apt-get install -y subversion');
 
   var ips = [];
+
+
   if (process.env.DOCKER_HOST) {
     ips = process.env.DOCKER_HOST.split('\n');
   }
@@ -257,14 +259,17 @@ module.exports = function() {
   console.log('You first need to specify the IP address or domain name of this');
   console.log('server, on which you\'ll be running the QEWD HIT Platform components');
   console.log('This IP address or domain name MUST be externally accessible');
-  var ipAddress;
+  var ipAddress = '';
+  var defaultIp = '';
   var defaultObj = {};
   if (ips.length > 0) {
     ipAddress = ips[0];
-    defaultObj = {defaultInput: ipAddress};
-    defaultIp = '(' + ipAddress + ')';
-    console.log(' ');
-    console.log('The IP address you should use may be in this list: ' + ips);
+    if (ipAddress) {
+      defaultObj = {defaultInput: ipAddress};
+      defaultIp = '(' + ipAddress + ')';
+      console.log(' ');
+      console.log('The IP address you should use may be in this list: ' + ips);
+    }
   }
 
   var ok = false;

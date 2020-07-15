@@ -192,7 +192,7 @@ Note that at this stage, the Orchestrator does not know anything about your new 
 it is not yet usable
 
 
-## Reconfigure the Orchastrator
+## Reconfigure the Orchestrator
 
 You now need to make two changes to the Orchestrator configuration:
 

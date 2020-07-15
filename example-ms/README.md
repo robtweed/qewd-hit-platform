@@ -293,12 +293,12 @@ So the *microservices* object should now look like this:
 Initially we'll be using the example API, so add this to the array of routes in the
 Orchestrator's *routes.json* file:
 
-  {
-    "uri": "/example/comments",
-    "method": "GET",
-    "authenticate": false,
-    "on_microservice": "example_ms"
-  },
+        {
+          "uri": "/example/comments",
+          "method": "GET",
+          "authenticate": false,
+          "on_microservice": "example_ms"
+        },
 
 Note that for now we're setting *authenticate: false* to allow us to easily test the new
 MicroService.

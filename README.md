@@ -1,7 +1,7 @@
 # qewd-hit-platform: QEWD Modular Platform for Health IT Demonstrator
  
 Rob Tweed <rtweed@mgateway.com>  
-26 June 2019, M/Gateway Developments Ltd [http://www.mgateway.com](http://www.mgateway.com)  
+15 July 2020, M/Gateway Developments Ltd [http://www.mgateway.com](http://www.mgateway.com)  
 
 Twitter: @rtweed
 
@@ -207,4 +207,6 @@ documentation:
 - [The OpenEHR Maintenance Application](./docs/openehr-maint.md)
 - [The OIDC Provider Administration Application](./docs/oidc-provider-admin.md)
 - [The MicroService-Enabled QEWD Monitoring Application](./docs/qewd-monitor-ms.md)
+- [How to add another MicroService to the HIT Platform](./example-ms/README.md)
+
 

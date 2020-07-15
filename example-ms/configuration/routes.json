@@ -1,0 +1,8 @@
+[
+  {
+    "uri": "/example/comments",
+    "method": "GET",
+    "handler": "getComments",
+    "authenticate": false
+  }
+]

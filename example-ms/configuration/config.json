@@ -1,0 +1,12 @@
+{
+  "qewd_up": true,
+  "ms_name": "example_ms",
+  "qewd": {
+    "serverName": "Example of an additional MicroService",
+    "poolSize": 3
+  },
+  "imported": true,
+  "jwt": {
+    "secret": "replace with value on orchestrator config.json"
+  }
+}

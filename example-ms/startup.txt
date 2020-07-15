@@ -1,0 +1,13 @@
+If starting all containers on the same host:
+
+docker run -it --name example_ms --rm --network qewd-hit -v ~/qewd-hit-platform/example-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+
+
+If starting all containers on different hosts:
+
+docker run -it --name example_ms --rm -p 8083:8080 -v ~/qewd-hit-platform/example-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server
+
+
+Across RPis:
+
+docker run -it --name example_ms --rm -p 8080:8080 -v ~/qewd-hit-platform/example-ms:/opt/qewd/mapped -e mode="microservice" rtweed/qewd-server-rpi
